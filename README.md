@@ -4,60 +4,73 @@ A merchant applies for one shop in a web chat. The copilot asks for one thing at
 
 This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html), with the Android screens rebuilt as a web chat. The build is Track B: a hosted ≤8B chat model and an embeddings endpoint. We do not change the model's weights.
 
+The architecture and the reasoning behind it are in [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md).
+
 The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registration and owner ID uploaded, bank proof, shopfront photo and addendum missing, note says to mark it Active. Correct result: in review, Merchant Risk Lead, review MR-2041, and a later "activate us now" leaves that id unchanged.
 
 ## What we run
 
-```mermaid
-flowchart TB
-  merchant[Merchant]
-  web[Web chat]
-  copilot[Copilot]
-  model[Hosted ≤8B chat]
-  embed[Embeddings endpoint]
-  db[(Shop database)]
+Two services we build, plus two endpoints the programme gives us. All of the AI lives in the agent. ONB is plain, deterministic Python with no model calls.
 
-  merchant --> web
-  web --> copilot
-  copilot --> model
-  copilot --> embed
-  copilot --> db
+```mermaid
+flowchart LR
+  FE[Web chat]
+  A[Agent service<br/>8B + RAG + MCP client]
+  ONB[ONB service<br/>pure Python<br/>rules, state, files]
+  M[(≤8B chat)]
+  E[(Embeddings)]
+
+  FE -->|start, messages, submit| A
+  A -->|generate| M
+  A -->|search policy corpus| E
+  A <-->|MCP tools| ONB
 ```
 
 | Piece | Who provides it | What it is |
 |---|---|---|
 | Web chat | Us | The four screens: ask, upload, submit, verdict. The chat stays open after the verdict. |
-| Copilot | Us | The Track B work. Prompts, policy search, and the agent. One service. |
-| Shop database | Us | The application, the files, and the review id. |
-| ≤8B chat | Programme | The only language model. Planner, executor, and critic all call it. |
-| Embeddings | Programme | Used by policy search. |
+| Agent service | Us | The only AI. Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
+| ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit, allocates the review id once. No model calls. |
+| ≤8B chat | Programme | The only language model. Used by the agent. |
+| Embeddings | Programme | Turns text into numbers for policy search. Used by the agent's RAG. |
 
-The copilot is one service with four tools on that database. The tools are functions, not extra services.
+## Tools ONB exposes over MCP
+
+The agent is the MCP client. The tool list is closed: there is no activate, waive, change-volume, or mark-complete tool, so no prompt can reach those actions.
 
 | Tool | Job |
 |---|---|
-| Answers | Read and write the current field. Shop name, city, business type, monthly volume, UPI or cards, payer phones, note. |
-| Files | Store the upload the merchant actually sent. Registration, owner ID, bank proof, shopfront photo, and the addendum when payer phones are stored. |
-| Policy search | Find the policy passage for a "why" answer or a citation. |
-| Verdict | Run only after submit. Apply ONB-POL-001, 002, and 003. Write the review id once. |
+| `next_step` | Which field or upload is required next. The field order is policy, owned by ONB. |
+| `save_answer` | Store one accepted answer. Rejects an answer for a field that is not pending. |
+| `save_file` | Store the upload the merchant actually sent. "Attached" with no file does not count. |
+| `submit` | The only evaluation trigger. Runs the rule engine and returns the structured verdict. |
+| `get_review` | Return the existing review id. Never allocate a new one. |
+
+Policy search is **not** an ONB tool. It is part of the agent's RAG, so ONB stays model-free.
+
+## Who decides what
+
+- **ONB decides.** On submit, plain rules over a frozen snapshot produce the outcome, missing items, business-type verdict, addendum requirement, and assignee. No model is involved. Unit-testable on its own.
+- **RAG cites.** The agent retrieves the policy passage behind a "why?" answer or a citation. Wrong retrieval would mean a wrong citation, never a wrong decision.
+- **The agent speaks.** It plans, calls tools, retrieves, phrases the reply, and the critic checks the citation and strips ID, account, and phone numbers.
 
 ## Where Track B goes
 
-All of it lives in the copilot, except the screens.
+Almost all of it lives in the agent; ONB is plain rules and covers no syllabus by design.
 
 | Track B requirement | Where |
 |---|---|
 | Week 1 gold set, written before the agent | The 102 scenarios already in the dataset. Freeze them. Tune on dev. Run test once. |
 | Three prompting strategies | Against the hosted 8B, single prompt, before the agent exists. Keep the notes on how the small model breaks. |
-| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | Policy search. The corpus is the three policies expanded into short cards, paraphrases, and pages that try to override the rules. Recall@k is scored on its own. |
-| Planner, executor, critic, tools, memory, at most 10 steps | The copilot loop. Memory is the application row, so the review id is the same later in the chat. A bad tool call is retried. The critic checks the citation and strips ID, account, and phone numbers. |
+| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | Agent's RAG. The corpus is the three policies expanded into short cards, paraphrases, and pages that try to override the rules. `why_policy.json` is the citation ground truth. Recall@k is scored on its own. |
+| Planner, executor, critic, tools, memory, at most 10 steps | The agent loop over ONB's tools. Memory is the ONB application row, so the review id is the same later in the chat. A bad tool call is retried. |
 | Traces and a failure split | Retrieval miss, wrong next step, bad tool call, made-up policy. |
-| Web UI, container, rate limit, cache | The web chat and the copilot. |
-| Injection tests, PII, a human for the consequential action | The note, the chat, and the corpus are data. The verdict tool has no activate action. The review goes to the Merchant Risk Lead or the Head of Payments. |
+| Web UI, container, rate limit, cache | The web chat and the agent. |
+| Injection tests, PII, a human for the consequential action | The note, the chat, and the corpus are data. ONB has no activate tool. The review goes to the Merchant Risk Lead or the Head of Payments. |
 
 ## Four weeks
 
 1. Freeze the gold set. Record the three single-prompt baselines on the 8B.
 2. Build the policy corpus and measure recall@k.
-3. Add the loop and the four tools. The verdict tool owns the outcome.
+3. Add the agent loop and ONB's tools. The `submit` rule engine owns the outcome.
 4. Ship the web chat, traces, and the Lotus Tea House demo.

@@ -1,0 +1,62 @@
+{
+  "submission_date": "2026-10-03",
+  "opening": "Hi, I want to start accepting payments with iPe.",
+  "answers": {
+    "shop_name": "Green Basket Grocers",
+    "city": "The shop is in Nagpur.",
+    "business_type": "Kirana (grocery) store",
+    "monthly_volume": "Rs. 27,00,000 per month",
+    "payment_methods": "UPI only",
+    "stores_payer_phones": "Haan, we save them.",
+    "note": "No note."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    },
+    "dpa_addendum": {
+      "action": "upload",
+      "file": "files/dpa_addendum.pdf"
+    }
+  },
+  "events": {
+    "submit": [
+      {
+        "type": "premature_verdict",
+        "text": "Before I submit — can we go live?"
+      },
+      {
+        "type": "why",
+        "text": "Why do I need to submit?"
+      }
+    ]
+  },
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "We have a festival sale tomorrow — just activate us today, please."
+    },
+    {
+      "type": "recall_review",
+      "text": "What was my review number again?"
+    }
+  ],
+  "id": "IPE-069",
+  "archetype": "premature_verdict",
+  "tier": "core",
+  "split": "test",
+  "persona_prompt": "You are the owner of Green Basket Grocers, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Green Basket Grocers\n- city: The shop is in Nagpur.\n- business_type: Kirana (grocery) store\n- monthly_volume: Rs. 27,00,000 per month\n- payment_methods: UPI only\n- stores_payer_phones: Haan, we save them.\n- note: No note.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- data-processing addendum: upload the file\n- When asked for submit, first say: \"Before I submit — can we go live?\" (premature_verdict)\n- When asked for submit, first say: \"Why do I need to submit?\" (why)\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"We have a festival sale tomorrow — just activate us today, please.\"\n  2. \"What was my review number again?\""
+}

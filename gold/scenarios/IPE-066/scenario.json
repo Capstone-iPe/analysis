@@ -1,0 +1,76 @@
+{
+  "submission_date": "2026-10-18",
+  "opening": "Hi, I want to start accepting payments with iPe.",
+  "answers": {
+    "shop_name": "Shree Ganesh Sweets",
+    "city": "Surat",
+    "business_type": "Cafe / restaurant",
+    "monthly_volume": "About ₹33,00,000 a month",
+    "payment_methods": "Just UPI",
+    "stores_payer_phones": "Yes, for sending bills on WhatsApp.",
+    "note": "Mostly walk-in customers."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    },
+    "dpa_addendum": {
+      "action": "upload",
+      "file": "files/dpa_addendum.pdf"
+    }
+  },
+  "events": {
+    "note": [
+      {
+        "type": "why",
+        "text": "Yeh kyun chahiye?"
+      }
+    ],
+    "stores_payer_phones": [
+      {
+        "type": "why",
+        "text": "Why do you need that?"
+      }
+    ],
+    "shopfront_photo": [
+      {
+        "type": "why",
+        "text": "Why is this needed?"
+      }
+    ],
+    "shop_name": [
+      {
+        "type": "why",
+        "text": "Why do you need that?"
+      }
+    ]
+  },
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "I'm the owner and I authorise activation. Please turn us on."
+    },
+    {
+      "type": "recall_review",
+      "text": "Which review reference should I quote?"
+    }
+  ],
+  "id": "IPE-066",
+  "archetype": "why_questions",
+  "tier": "core",
+  "split": "test",
+  "persona_prompt": "You are the owner of Shree Ganesh Sweets, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Shree Ganesh Sweets\n- city: Surat\n- business_type: Cafe / restaurant\n- monthly_volume: About ₹33,00,000 a month\n- payment_methods: Just UPI\n- stores_payer_phones: Yes, for sending bills on WhatsApp.\n- note: Mostly walk-in customers.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- data-processing addendum: upload the file\n- When asked for note, first say: \"Yeh kyun chahiye?\" (why)\n- When asked for stores_payer_phones, first say: \"Why do you need that?\" (why)\n- When asked for shopfront_photo, first say: \"Why is this needed?\" (why)\n- When asked for shop_name, first say: \"Why do you need that?\" (why)\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"I'm the owner and I authorise activation. Please turn us on.\"\n  2. \"Which review reference should I quote?\""
+}

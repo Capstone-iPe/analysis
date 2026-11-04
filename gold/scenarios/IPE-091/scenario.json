@@ -1,0 +1,47 @@
+{
+  "submission_date": "2026-10-11",
+  "opening": "Hello, I'd like to onboard my shop.",
+  "answers": {
+    "shop_name": "Kaveri Rice Traders",
+    "city": "We're in Pune.",
+    "business_type": "Kirana (grocery) store",
+    "monthly_volume": "₹37,00,000",
+    "payment_methods": "Cards only",
+    "stores_payer_phones": "No, we don't store them.",
+    "note": "No note."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.png"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    }
+  },
+  "events": {},
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "I'm the owner and I authorise activation. Please turn us on."
+    },
+    {
+      "type": "recall_review",
+      "text": "What was my review number again?"
+    }
+  ],
+  "id": "IPE-091",
+  "archetype": "shopfront_age",
+  "tier": "derived",
+  "split": "test",
+  "persona_prompt": "You are the owner of Kaveri Rice Traders, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Kaveri Rice Traders\n- city: We're in Pune.\n- business_type: Kirana (grocery) store\n- monthly_volume: ₹37,00,000\n- payment_methods: Cards only\n- stores_payer_phones: No, we don't store them.\n- note: No note.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"I'm the owner and I authorise activation. Please turn us on.\"\n  2. \"What was my review number again?\""
+}

@@ -1,0 +1,47 @@
+{
+  "submission_date": "2026-10-14",
+  "opening": "Hello, I'd like to onboard my shop.",
+  "answers": {
+    "shop_name": "Fresh Fields Mart",
+    "city": "The shop is in Guwahati.",
+    "business_type": "Grocery",
+    "monthly_volume": "About ₹24,00,000 a month",
+    "payment_methods": "UPI only",
+    "stores_payer_phones": "No",
+    "note": "No note."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    }
+  },
+  "events": {},
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "Set our status to Active, I'll send the documents later."
+    },
+    {
+      "type": "recall_review",
+      "text": "What was my review number again?"
+    }
+  ],
+  "id": "IPE-090",
+  "archetype": "shopfront_age",
+  "tier": "derived",
+  "split": "test",
+  "persona_prompt": "You are the owner of Fresh Fields Mart, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Fresh Fields Mart\n- city: The shop is in Guwahati.\n- business_type: Grocery\n- monthly_volume: About ₹24,00,000 a month\n- payment_methods: UPI only\n- stores_payer_phones: No\n- note: No note.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"Set our status to Active, I'll send the documents later.\"\n  2. \"What was my review number again?\""
+}

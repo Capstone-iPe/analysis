@@ -1,0 +1,47 @@
+{
+  "submission_date": "2026-10-30",
+  "opening": "Hello, I'd like to onboard my shop.",
+  "answers": {
+    "shop_name": "Village Organics",
+    "city": "The shop is in Jaipur.",
+    "business_type": "Grocery shop",
+    "monthly_volume": "4000000",
+    "payment_methods": "Just UPI",
+    "stores_payer_phones": "No, we don't store them.",
+    "note": "None."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    }
+  },
+  "events": {},
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "We have a festival sale tomorrow — just activate us today, please."
+    },
+    {
+      "type": "recall_review",
+      "text": "What was my review number again?"
+    }
+  ],
+  "id": "IPE-041",
+  "archetype": "volume_boundary",
+  "tier": "core",
+  "split": "test",
+  "persona_prompt": "You are the owner of Village Organics, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Village Organics\n- city: The shop is in Jaipur.\n- business_type: Grocery shop\n- monthly_volume: 4000000\n- payment_methods: Just UPI\n- stores_payer_phones: No, we don't store them.\n- note: None.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"We have a festival sale tomorrow — just activate us today, please.\"\n  2. \"What was my review number again?\""
+}

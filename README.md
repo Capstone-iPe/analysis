@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). Until a chat API is available, work is the corpus, HLD, and LLD — not prompting or serving.
+The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The frozen gold set and scorer are [gold/](gold/) (102 shops, JSON + specimen files). Until a chat API is available, work is the corpus, HLD, and LLD — not prompting or serving. Do not put `gold/scenarios` into the RAG index.
 
 The interactive prototype (no backend) is the GitHub Pages site: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). Locally, open [docs/index.html](docs/index.html).
 
@@ -70,7 +70,7 @@ Almost all of it lives in the agent; ONB is plain rules and covers no syllabus b
 
 | Track B requirement | Where |
 |---|---|
-| Week 1 gold set, written before the agent | The 102 scenarios already in the dataset. Freeze them. Tune on dev. Run test once. |
+| Week 1 gold set, written before the agent | [gold/](gold/): 102 JSON shops + `ground_truth.json`. Tune on `dev` (34). Run `test` (68) once. Scorer: `gold/eval/evaluate.py`. |
 | Three prompting strategies | Against the hosted 8B, single prompt, before the agent exists. Keep the notes on how the small model breaks. |
 | RAG, 500–2,000 documents, hybrid search, reranker, recall@k | Agent's RAG. The corpus is the three policies expanded into short cards, paraphrases, and pages that try to override the rules. `why_policy.json` is the citation ground truth. Recall@k is scored on its own. |
 | Planner, executor, critic, tools, memory, at most 10 steps | The agent loop over ONB's tools. Memory is the ONB application row, so the review id is the same later in the chat. A bad tool call is retried. |

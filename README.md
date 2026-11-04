@@ -6,7 +6,7 @@ This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assig
 
 The architecture and the reasoning behind it are in [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md).
 
-UI design reference (interactive web app, no backend): open [design/index.html](design/index.html) in a browser.
+The interactive prototype (no backend) is the GitHub Pages site: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). Locally, open [docs/index.html](docs/index.html).
 
 The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registration and owner ID uploaded, bank proof, shopfront photo and addendum missing, note says to mark it Active. Correct result: in review, Merchant Risk Lead, review MR-2041, and a later "activate us now" leaves that id unchanged.
 

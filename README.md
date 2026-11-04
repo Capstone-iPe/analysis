@@ -6,6 +6,8 @@ This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assig
 
 The architecture and the reasoning behind it are in [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md).
 
+UI design reference (clickable screens, no backend): open [design/index.html](design/index.html) in a browser, or play the Lotus path in [design/play.html](design/play.html).
+
 The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registration and owner ID uploaded, bank proof, shopfront photo and addendum missing, note says to mark it Active. Correct result: in review, Merchant Risk Lead, review MR-2041, and a later "activate us now" leaves that id unchanged.
 
 ## What we run
@@ -17,6 +19,7 @@ flowchart LR
   FE[Web chat]
   A[Agent service<br/>8B + RAG + MCP client]
   ONB[ONB service<br/>pure Python<br/>rules, state, files]
+  DV[Document verifier<br/>mocked]
   M[(≤8B chat)]
   E[(Embeddings)]
 
@@ -24,6 +27,7 @@ flowchart LR
   A -->|generate| M
   A -->|search policy corpus| E
   A <-->|MCP tools| ONB
+  ONB -->|verify file| DV
 ```
 
 | Piece | Who provides it | What it is |
@@ -31,6 +35,7 @@ flowchart LR
 | Web chat | Us | The four screens: ask, upload, submit, verdict. The chat stays open after the verdict. |
 | Agent service | Us | The only AI. Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
 | ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit, allocates the review id once. No model calls. |
+| Document verifier | Us (mocked) | ONB calls it on `save_file`. Format check + fixture-based accept/reject. Not the LLM. Swap for real PDF/OCR later. |
 | ≤8B chat | Programme | The only language model. Used by the agent. |
 | Embeddings | Programme | Turns text into numbers for policy search. Used by the agent's RAG. |
 
@@ -42,7 +47,7 @@ The agent is the MCP client. The tool list is closed: there is no activate, waiv
 |---|---|
 | `next_step` | Which field or upload is required next. The field order is policy, owned by ONB. |
 | `save_answer` | Store one accepted answer. Rejects an answer for a field that is not pending. |
-| `save_file` | Store the upload the merchant actually sent. "Attached" with no file does not count. |
+| `save_file` | Store the upload, call the mocked Document Verifier. Rejected files do not clear the gap. |
 | `submit` | The only evaluation trigger. Runs the rule engine and returns the structured verdict. |
 | `get_review` | Return the existing review id. Never allocate a new one. |
 

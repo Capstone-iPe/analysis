@@ -45,6 +45,14 @@ The retrieval corpus (target 500–2,000 chunks) is built from the three policie
 
 ONB exposes its capabilities as MCP tools; the agent is the MCP client. The tool list is closed and deliberately excludes any activate, waive, change-volume, or mark-complete capability, so no amount of prompting reaches those actions.
 
+### D7 — Document Verifier is a separate seam; implementation is mocked for the capstone
+
+Pack-slot validity (format, name match, shopfront age, signed addendum, wrong document) is **not** decided by the LLM. ONB calls a Document Verifier behind a fixed API:
+
+`verify(slot, shop_name, file, submit_date) → { accepted, reason_code, ... }`
+
+For the four-week build the verifier is **mocked**: real format check, then accept/reject from fixtures (filename conventions, content hints, or a fixture table). Invalid or missing slots still count as gaps → `IN_REVIEW`. The report must state that production would replace the stub with PDF/OCR rules; the agent never writes `accepted` itself.
+
 ## 3. High-level design
 
 ```mermaid
@@ -52,6 +60,7 @@ flowchart LR
   FE[Web chat]
   A[Agent service<br/>8B + RAG + MCP client]
   ONB[ONB service<br/>pure Python<br/>rules, state, files]
+  DV[Document verifier<br/>mocked fixtures]
   M[(≤8B chat)]
   E[(Embeddings)]
 
@@ -59,19 +68,26 @@ flowchart LR
   A -->|generate| M
   A -->|search policy corpus| E
   A <-->|MCP tools| ONB
+  ONB -->|verify file| DV
 ```
 
 ### MCP tools ONB exposes
 
 | Tool | Direction | Purpose |
 |---|---|---|
-| `next_step(application_id)` | read | Which field or upload is required next. Field order is policy, owned by ONB. |
+| `next_step(application_id?)` | read | Which field or upload is required next, plus the current snapshot (answers + file states) so the agent can render the review draft. Called with no id on turn one, which **implicitly creates** the application and returns its id. Field order is policy, owned by ONB. |
 | `save_answer(application_id, field, value)` | write | Store one accepted answer. Rejects an answer for a field that is not pending. |
-| `save_file(application_id, slot, file)` | write | Store a real upload. "Attached" with no file does not count. |
+| `save_file(application_id, slot, file?, missing=false)` | write | Store a real upload, then call Document Verifier. `missing=true` is how "I don't have it" closes the slot. "Attached" with no file does not count. Rejected files do not clear the gap. |
 | `submit(application_id)` | write | The only evaluation trigger. Runs the rule engine and returns the structured verdict. |
 | `get_review(application_id)` | read | Returns the existing review id. Never allocates a new one. |
 
-Policy search is intentionally **not** an ONB tool — it is internal to the agent's RAG (see D4).
+Five tools, closed list. Decisions behind the shape:
+
+- **No `create_application`** — the first `next_step` (no id) creates the application and returns the id.
+- **No `get_application`** — `next_step` already returns the snapshot the review-draft summary needs.
+- **No `mark_missing`** — "I don't have it" is `save_file(slot, missing=true)`.
+
+Policy search is intentionally **not** an ONB tool — it is internal to the agent's RAG (see D4). `verify(...)` is internal ONB → Document Verifier (see D7), not exposed to the agent.
 
 ## 4. Sequence diagrams
 
@@ -268,3 +284,4 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 - **Separate decision *agent* service.** Rejected for a 4-week build: extra hop and plumbing with no benefit once the verdict is rule-based. Kept as a tool inside ONB instead.
 - **Policy search as an ONB tool.** Rejected so ONB stays truly model-free; retrieval moved into the agent's RAG.
 - **Fine-tuning (Track A style).** Out of scope for Track B; no weight access.
+- **Full PDF/OCR Document Verifier in week 1–4.** Deferred; mocked behind the same API (D7) so invalid → IN_REVIEW stays demonstrable without an OCR stack.

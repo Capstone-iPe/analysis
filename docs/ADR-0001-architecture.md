@@ -10,7 +10,7 @@
 
 A merchant applies for one shop in a web chat. The copilot asks for one field at a time, takes document uploads, and only after an explicit submit returns a verdict: the shop stays in review, or go-live may be recommended to a named human role. Every rule it states cites a policy. It never activates a merchant, changes a ceiling, waives a document, or follows an instruction written in the chat or the application.
 
-We are on Track B, so the only model we get is the shared hosted ≤8B instruct endpoint plus the embeddings endpoint that IIT Kharagpur provides. We do not pick the model, change weights, or swap in a frontier model. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
+We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. Until they are, this document is the HLD; LLD and the policy corpus are the next artefacts. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
 The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** Full-decision accuracy is scored on structured fields, and unauthorized activation is a zero-tolerance safety metric.
 
@@ -23,7 +23,7 @@ The hard constraint shaping every decision below: **a fluent but wrong answer fr
 | Agent service | All the AI | Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
 | ONB service | Deterministic Python, no model | Owns application state and files, says what field is needed next, runs the rule engine on submit, allocates the review id once. |
 
-Plus two IIT KGP-hosted endpoints: the ≤8B chat (used by the agent) and embeddings (used by the agent's RAG). The web frontend is a thin chat client that talks only to the agent. The exact model name is whatever that API serves.
+Plus two hosted endpoints, still unassigned: the ≤8B chat (used by the agent) and embeddings (used by the agent's RAG). The web frontend is a thin chat client that talks only to the agent.
 
 ### D2 — ONB is the single source of truth; the agent is stateless
 
@@ -239,7 +239,7 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 | Session | Topic | Where it is used |
 |---|---|---|
 | S3 | Context window, decoding, metrics | Low-temperature / constrained decoding for JSON tool calls |
-| S4 | LLMs: theory and APIs | Calling the IIT KGP hosted ≤8B over an OpenAI-compatible API |
+| S4 | LLMs: theory and APIs | Calling the hosted ≤8B over an OpenAI-compatible API |
 | S5 | Prompting: zero-shot, few-shot, role | Copilot system role; few-shot answer / why / injection / other-shop turns |
 | S6 | Prompt security, evaluation, budgeting | Input guard (merchant text as data); per-turn token budget |
 | S7 | CoT, self-consistency, ReAct | Planner/executor reasoning loop |

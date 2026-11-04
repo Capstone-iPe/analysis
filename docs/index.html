@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>iPe — Onboarding</title>
   <link rel="stylesheet" href="assets/prototype.css" />
 </head>
@@ -30,7 +30,10 @@
 
     <main class="main">
       <div class="app-header">
-        <div>
+        <button type="button" class="menu-btn" id="menu-btn" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <div class="titles">
           <h1>Onboarding</h1>
           <p id="hdr-sub">Your shop</p>
         </div>
@@ -43,6 +46,7 @@
     </main>
   </div>
 
+  <div class="nav-scrim hidden" id="nav-scrim"></div>
   <div class="picker-scrim hidden" id="picker" role="dialog" aria-label="Choose a file">
     <div class="picker">
       <header>

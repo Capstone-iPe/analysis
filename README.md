@@ -2,7 +2,12 @@
 
 A merchant applies for one shop in a web chat. The copilot asks for one thing at a time, takes the documents, and after the merchant presses submit it says whether the shop stays in review or can be recommended for go-live. It names what is missing, cites the policy, and gives a review id. A person at iPe activates the shop. The copilot does not.
 
-This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html), with the Android screens rebuilt as a web chat. The build is Track B: a hosted ≤8B chat model and an embeddings endpoint. We do not change the model's weights.
+This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html), with the Android screens rebuilt as a web chat. The build is Track B: IIT Kharagpur hosts the ≤8B chat and embeddings APIs. We do not pick a model, change weights, or run a GPU.
+
+Programme documents:
+
+- [Capstone project templates](docs/Capstone-Templates-GenAI-Agentic-AI.pdf) — Track A / Track B selection
+- [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
 The architecture and the reasoning behind it are in [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md).
 
@@ -12,7 +17,7 @@ The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registrat
 
 ## What we run
 
-Two services we build, plus two endpoints the programme gives us. All of the AI lives in the agent. ONB is plain, deterministic Python with no model calls.
+Two services we build, plus the two APIs IIT KGP hosts. All of the AI lives in the agent. ONB is plain, deterministic Python with no model calls.
 
 ```mermaid
 flowchart LR
@@ -36,8 +41,8 @@ flowchart LR
 | Agent service | Us | The only AI. Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
 | ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit, allocates the review id once. No model calls. |
 | Document verifier | Us (mocked) | ONB calls it on `save_file`. Format check + fixture-based accept/reject. Not the LLM. Swap for real PDF/OCR later. |
-| ≤8B chat | Programme | The only language model. Used by the agent. |
-| Embeddings | Programme | Turns text into numbers for policy search. Used by the agent's RAG. |
+| ≤8B chat | IIT KGP (hosted API) | The only language model. Used by the agent. |
+| Embeddings | IIT KGP (hosted API) | Turns text into numbers for policy search. Used by the agent's RAG. |
 
 ## Tools ONB exposes over MCP
 

@@ -619,6 +619,23 @@ async function boot() {
 
 document.getElementById("picker-close").addEventListener("click", closePicker);
 picker.addEventListener("click", e => { if (e.target === picker) closePicker(); });
-document.getElementById("new-app").addEventListener("click", restart);
+document.getElementById("new-app").addEventListener("click", () => { closeNav(); restart(); });
+
+const appEl = document.querySelector(".app");
+const navScrim = document.getElementById("nav-scrim");
+function openNav() {
+  appEl.classList.add("nav-open");
+  navScrim.classList.remove("hidden");
+  document.getElementById("menu-btn").setAttribute("aria-label", "Close menu");
+}
+function closeNav() {
+  appEl.classList.remove("nav-open");
+  navScrim.classList.add("hidden");
+  document.getElementById("menu-btn").setAttribute("aria-label", "Open menu");
+}
+document.getElementById("menu-btn").addEventListener("click", () => {
+  appEl.classList.contains("nav-open") ? closeNav() : openNav();
+});
+navScrim.addEventListener("click", closeNav);
 
 boot();

@@ -3,87 +3,56 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>iPe Onboarding — UI design</title>
+  <title>iPe — Onboarding</title>
   <link rel="stylesheet" href="assets/prototype.css" />
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
-      <a class="brand" href="index.html">
-        <span class="brand-mark">iPe</span>
-        <span class="brand-sub">UI design · web chat</span>
-      </a>
-      <nav class="nav">
-        <a class="active" href="index.html">Screens</a>
-        <a href="play.html">Play Lotus</a>
-      </nav>
-    </header>
-
-    <section class="hero">
-      <h1>Web chat for merchant onboarding</h1>
-      <p>
-        Design reference for the capstone. Same product rules as
-        <a href="https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html">IPE-PRD-001</a>,
-        delivered as a browser chat — not Android. No Activate control.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="play.html">Play Lotus Tea House</a>
-        <a class="btn btn-ghost" href="screens/01-welcome.html">Start at welcome</a>
+  <div class="app">
+    <aside class="rail">
+      <div class="rail-brand">iPe<span>Payments for shops</span></div>
+      <div>
+        <div class="rail-section-label">This shop</div>
+        <div class="rail-app">
+          <div class="name" id="rail-shop">New application</div>
+          <div class="sub" id="rail-id">Not submitted</div>
+          <span class="rail-status" id="rail-status">Draft</span>
+        </div>
       </div>
-    </section>
+      <div>
+        <div class="rail-section-label">Application</div>
+        <div class="rail-steps" id="rail-steps"></div>
+      </div>
+      <div class="rail-foot">
+        <button type="button" id="new-app">New application</button>
+        <p class="legal">Only the Merchant Risk Lead can turn a shop on. This chat prepares the review.</p>
+      </div>
+    </aside>
 
-    <div class="grid">
-      <a class="card" href="screens/01-welcome.html">
-        <div class="kicker">S01</div>
-        <h3>Welcome</h3>
-        <p>Start onboarding for this shop in the browser.</p>
-      </a>
-      <a class="card" href="screens/02-ask.html">
-        <div class="kicker">S02</div>
-        <h3>Ask one field</h3>
-        <p>Sequential intake. One unanswered field at a time.</p>
-      </a>
-      <a class="card" href="screens/03-why.html">
-        <div class="kicker">S04</div>
-        <h3>Why explanation</h3>
-        <p>Policy citation, then the same question again.</p>
-      </a>
-      <a class="card" href="screens/04-upload.html">
-        <div class="kicker">S03</div>
-        <h3>Document upload</h3>
-        <p>Real file control. Claimed upload without a file does not count.</p>
-      </a>
-      <a class="card" href="screens/05-review.html">
-        <div class="kicker">S05</div>
-        <h3>Review · gaps open</h3>
-        <p>No Submit while pack items are still open. Suggestions fix the gaps.</p>
-      </a>
-      <a class="card" href="screens/05-review-ready.html">
-        <div class="kicker">S05</div>
-        <h3>Review · ready</h3>
-        <p>Gaps closed. Submit application appears as a suggestion pill.</p>
-      </a>
-      <a class="card" href="screens/07-verdict.html">
-        <div class="kicker">S06</div>
-        <h3>Verdict</h3>
-        <p>In review, missing items, assignee, review id, citations.</p>
-      </a>
-      <a class="card" href="screens/08-refuse.html">
-        <div class="kicker">S07</div>
-        <h3>After verdict</h3>
-        <p>Refuse activation. Review id unchanged.</p>
-      </a>
-      <a class="card" href="play.html">
-        <div class="kicker">Demo</div>
-        <h3>Lotus Tea House</h3>
-        <p>Click through the worked acceptance case end to end.</p>
-      </a>
-    </div>
-
-    <p class="note">
-      Design only — static HTML for the team to refer to. Architecture:
-      <code>docs/ADR-0001-architecture.md</code>.
-    </p>
+    <main class="main">
+      <div class="app-header">
+        <div>
+          <h1>Onboarding</h1>
+          <p id="hdr-sub">Your shop</p>
+        </div>
+        <span class="status-pill draft" id="hdr-status">Draft</span>
+      </div>
+      <div class="chat" id="chat"><div class="chat-inner" id="chat-inner"></div></div>
+      <div class="composer">
+        <div class="composer-inner" id="composer"></div>
+      </div>
+    </main>
   </div>
+
+  <div class="picker-scrim hidden" id="picker" role="dialog" aria-label="Choose a file">
+    <div class="picker">
+      <header>
+        <strong id="picker-title">Choose a file</strong>
+        <button type="button" id="picker-close">Cancel</button>
+      </header>
+      <ul id="picker-list"></ul>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
 </body>
 </html>

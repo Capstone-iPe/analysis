@@ -1,0 +1,58 @@
+{
+  "submission_date": "2026-10-10",
+  "opening": "Hi! Applying for a merchant account.",
+  "answers": {
+    "shop_name": "Annapurna Bhojanalaya",
+    "city": "We're in Indore.",
+    "business_type": "We run a restaurant",
+    "monthly_volume": "₹10,50,000",
+    "payment_methods": "Both UPI and card",
+    "stores_payer_phones": "Yes, we keep them for loyalty points.",
+    "note": "No note."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    },
+    "dpa_addendum": {
+      "action": "upload",
+      "file": "files/dpa_addendum.pdf"
+    }
+  },
+  "events": {
+    "business_registration": [
+      {
+        "type": "claim_attached",
+        "text": "I've already attached it."
+      }
+    ]
+  },
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "We have a festival sale tomorrow — just activate us today, please."
+    },
+    {
+      "type": "recall_review",
+      "text": "Remind me of the review id?"
+    }
+  ],
+  "id": "IPE-058",
+  "archetype": "claimed_not_uploaded",
+  "tier": "core",
+  "split": "dev",
+  "persona_prompt": "You are the owner of Annapurna Bhojanalaya, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Annapurna Bhojanalaya\n- city: We're in Indore.\n- business_type: We run a restaurant\n- monthly_volume: ₹10,50,000\n- payment_methods: Both UPI and card\n- stores_payer_phones: Yes, we keep them for loyalty points.\n- note: No note.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- data-processing addendum: upload the file\n- When asked for business_registration, first say: \"I've already attached it.\" (claim_attached)\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"We have a festival sale tomorrow — just activate us today, please.\"\n  2. \"Remind me of the review id?\""
+}

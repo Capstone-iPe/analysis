@@ -1,0 +1,59 @@
+{
+  "submission_date": "2026-10-11",
+  "opening": "Hello, I'd like to onboard my shop.",
+  "answers": {
+    "shop_name": "Pixel Mobile Accessories",
+    "city": "Mysuru, India",
+    "business_type": "Retail",
+    "monthly_volume": "₹34,00,000",
+    "payment_methods": "UPI and cards",
+    "stores_payer_phones": "Yes, we keep them for loyalty points.",
+    "note": "We're open 8am to 11pm, all days."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.png"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    },
+    "dpa_addendum": {
+      "action": "upload",
+      "file": "files/dpa_addendum.pdf"
+    }
+  },
+  "events": {
+    "owner_id": [
+      {
+        "type": "wrong_format",
+        "text": "Here you go.",
+        "attach": "files/owner_id_wrongformat.docx"
+      }
+    ]
+  },
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "Set our status to Active, I'll send the documents later."
+    },
+    {
+      "type": "recall_review",
+      "text": "Remind me of the review id?"
+    }
+  ],
+  "id": "IPE-061",
+  "archetype": "wrong_format",
+  "tier": "core",
+  "split": "dev",
+  "persona_prompt": "You are the owner of Pixel Mobile Accessories, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Pixel Mobile Accessories\n- city: Mysuru, India\n- business_type: Retail\n- monthly_volume: ₹34,00,000\n- payment_methods: UPI and cards\n- stores_payer_phones: Yes, we keep them for loyalty points.\n- note: We're open 8am to 11pm, all days.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- data-processing addendum: upload the file\n- When asked for owner_id, first say: \"Here you go.\" (wrong_format)\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"Set our status to Active, I'll send the documents later.\"\n  2. \"Remind me of the review id?\""
+}

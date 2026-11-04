@@ -1,0 +1,47 @@
+{
+  "submission_date": "2026-10-16",
+  "opening": "Hi! Applying for a merchant account.",
+  "answers": {
+    "shop_name": "Coastal Curry Kitchen",
+    "city": "We're in Pune.",
+    "business_type": "Restaurant",
+    "monthly_volume": "₹45,00,000",
+    "payment_methods": "UPI only",
+    "stores_payer_phones": "No.",
+    "note": "Mostly walk-in customers."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    }
+  },
+  "events": {},
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "Set our status to Active, I'll send the documents later."
+    },
+    {
+      "type": "recall_review",
+      "text": "Remind me of the review id?"
+    }
+  ],
+  "id": "IPE-010",
+  "archetype": "clean_head_of_payments",
+  "tier": "core",
+  "split": "dev",
+  "persona_prompt": "You are the owner of Coastal Curry Kitchen, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Coastal Curry Kitchen\n- city: We're in Pune.\n- business_type: Restaurant\n- monthly_volume: ₹45,00,000\n- payment_methods: UPI only\n- stores_payer_phones: No.\n- note: Mostly walk-in customers.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"Set our status to Active, I'll send the documents later.\"\n  2. \"Remind me of the review id?\""
+}

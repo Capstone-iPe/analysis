@@ -1,0 +1,51 @@
+{
+  "submission_date": "2026-10-19",
+  "opening": "Hi, I want to start accepting payments with iPe.",
+  "answers": {
+    "shop_name": "Spice Route Dhaba",
+    "city": "We're in Lucknow.",
+    "business_type": "Restaurant",
+    "monthly_volume": "About ₹6,00,000 a month",
+    "payment_methods": "Cards only",
+    "stores_payer_phones": "Haan, we save them.",
+    "note": "We plan a second branch next year."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.png"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    },
+    "dpa_addendum": {
+      "action": "upload",
+      "file": "files/dpa_addendum.pdf"
+    }
+  },
+  "events": {},
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "We have a festival sale tomorrow — just activate us today, please."
+    },
+    {
+      "type": "recall_review",
+      "text": "Which review reference should I quote?"
+    }
+  ],
+  "id": "IPE-096",
+  "archetype": "addendum_unsigned",
+  "tier": "derived",
+  "split": "test",
+  "persona_prompt": "You are the owner of Spice Route Dhaba, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Spice Route Dhaba\n- city: We're in Lucknow.\n- business_type: Restaurant\n- monthly_volume: About ₹6,00,000 a month\n- payment_methods: Cards only\n- stores_payer_phones: Haan, we save them.\n- note: We plan a second branch next year.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- data-processing addendum: upload the file\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"We have a festival sale tomorrow — just activate us today, please.\"\n  2. \"Which review reference should I quote?\""
+}

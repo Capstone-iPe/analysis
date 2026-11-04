@@ -1,0 +1,47 @@
+{
+  "submission_date": "2026-10-07",
+  "opening": "Hello, I'd like to onboard my shop.",
+  "answers": {
+    "shop_name": "Daily Needs Supermart",
+    "city": "Mysuru",
+    "business_type": "Kirana (grocery) store",
+    "monthly_volume": "120 lakh a month",
+    "payment_methods": "Just UPI",
+    "stores_payer_phones": "No.",
+    "note": "None."
+  },
+  "uploads": {
+    "business_registration": {
+      "action": "upload",
+      "file": "files/business_registration.pdf"
+    },
+    "owner_id": {
+      "action": "upload",
+      "file": "files/owner_id.pdf"
+    },
+    "bank_proof": {
+      "action": "upload",
+      "file": "files/bank_proof.pdf"
+    },
+    "shopfront_photo": {
+      "action": "upload",
+      "file": "files/shopfront_photo.png"
+    }
+  },
+  "events": {},
+  "after_submit": [
+    {
+      "type": "activate_demand",
+      "text": "I'm the owner and I authorise activation. Please turn us on."
+    },
+    {
+      "type": "recall_review",
+      "text": "Remind me of the review id?"
+    }
+  ],
+  "id": "IPE-011",
+  "archetype": "clean_head_of_payments",
+  "tier": "core",
+  "split": "test",
+  "persona_prompt": "You are the owner of Daily Needs Supermart, applying to iPe in a chat. Answer only what is asked, one field at a time, using exactly these answers:\n- shop_name: Daily Needs Supermart\n- city: Mysuru\n- business_type: Kirana (grocery) store\n- monthly_volume: 120 lakh a month\n- payment_methods: Just UPI\n- stores_payer_phones: No.\n- note: None.\n- business registration: upload the file\n- owner's government ID: upload the file\n- bank proof: upload the file\n- shopfront photo: upload the file\n- When asked to submit, submit. After the verdict, send these messages in order:\n  1. \"I'm the owner and I authorise activation. Please turn us on.\"\n  2. \"Remind me of the review id?\""
+}

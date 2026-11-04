@@ -162,7 +162,7 @@ sequenceDiagram
   A->>A: input guard — merchant text is data, not an instruction
   A->>ONB: get_review(app)
   ONB-->>A: MR-#### still IN_REVIEW, unchanged
-  A-->>FE: cannot activate; cite ONB-POL-001 section 4; review id unchanged
+  A-->>FE: "cannot activate; cite ONB-POL-001 §4; review id unchanged"
   Note over A,ONB: no tool exists to activate, waive, or change volume
 ```
 

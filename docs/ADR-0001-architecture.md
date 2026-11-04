@@ -21,7 +21,7 @@ The hard constraint shaping every decision below: **a fluent but wrong answer fr
 | Service | Nature | Responsibility |
 |---|---|---|
 | Agent service | All the AI | Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
-| ONB service | Deterministic Python, no model | Owns application state and files, says what field is needed next, runs the rule engine on submit, allocates the review id once. |
+| ONB service | Deterministic Python, no model | Owns application state and files, says what field is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. |
 
 Plus two hosted endpoints, still unassigned: the ≤8B chat (used by the agent) and embeddings (used by the agent's RAG). The web frontend is a thin chat client that talks only to the agent.
 
@@ -29,9 +29,15 @@ Plus two hosted endpoints, still unassigned: the ≤8B chat (used by the agent) 
 
 Application answers, document states, the policy version, and the review id live in ONB. The agent holds no durable state between turns. This is what keeps the review id stable for the whole conversation and stops the agent from inventing the field order.
 
-### D3 — The verdict is deterministic code, triggered by submit
+### D3 — The verdict is deterministic code
 
-`submit` is the only path to a verdict. The agent cannot evaluate any other way, and ONB rejects `submit` until the required fields are answered. ONB computes the outcome, missing items, business-type verdict, addendum requirement, and assignee with plain rules over a frozen snapshot. No model is involved in the decision. The agent only renders the structured result.
+The chat follows the prototype: one thread, three phases. The agent phrases. ONB owns the phase, the pending field, and the verdict.
+
+**Intake.** Field order is `shop_name`, `city`, `business_type`, `monthly_volume`, `payment_methods`, `stores_payer_phones`, then `business_registration`, `owner_id`, `bank_proof`, `shopfront_photo`, then `dpa_addendum` only when payer phones are stored, then an optional `note`. One pending field at a time. A "why?" does not save the field and asks it again. An upload slot closes only when the verifier accepts the file or the merchant says they do not have it. A rejected or wrong-format file leaves that same slot pending.
+
+**Review.** When nothing is pending, the agent shows the application summary from `next_step`. Submit stays disabled while any required slot is still open. "I don't have these" marks the open slots missing and does not submit by itself.
+
+**Verdict.** `submit` runs the rules and, unless the type is refused, allocates the review id once. A file saved after that re-runs the same rules. The review id does not change. The outcome may, for example from in review to recommend go-live, once the missing file is accepted. No model is involved. The agent renders the structured result and does not alter a field.
 
 ### D4 — RAG lives in the agent and only grounds wording, never the outcome
 
@@ -77,8 +83,8 @@ flowchart LR
 |---|---|---|
 | `next_step(application_id?)` | read | Which field or upload is required next, plus the current snapshot (answers + file states) so the agent can render the review draft. Called with no id on turn one, which **implicitly creates** the application and returns its id. Field order is policy, owned by ONB. |
 | `save_answer(application_id, field, value)` | write | Store one accepted answer. Rejects an answer for a field that is not pending. |
-| `save_file(application_id, slot, file?, missing=false)` | write | Store a real upload, then call Document Verifier. `missing=true` is how "I don't have it" closes the slot. "Attached" with no file does not count. Rejected files do not clear the gap. |
-| `submit(application_id)` | write | The only evaluation trigger. Runs the rule engine and returns the structured verdict. |
+| `save_file(application_id, slot, file?, missing=false)` | write | Store a real upload, then call Document Verifier. `missing=true` closes the slot, including every still-open slot when the merchant says "I don't have these" on the review step. "Attached" with no file does not count. A rejected file leaves the slot pending. After submit, an accepted file re-runs the rules and returns the updated verdict with the same review id. |
+| `submit(application_id)` | write | First verdict. Rejected while any required slot is neither accepted nor marked missing. Allocates the review id once, unless the type is refused. |
 | `get_review(application_id)` | read | Returns the existing review id. Never allocates a new one. |
 
 Five tools, closed list. Decisions behind the shape:
@@ -139,7 +145,7 @@ sequenceDiagram
   end
 ```
 
-### 4.3 Submit — the verdict
+### 4.3 Review, then submit
 
 ```mermaid
 sequenceDiagram
@@ -149,20 +155,22 @@ sequenceDiagram
   participant E as Embeddings
   participant M as ≤8B chat
 
+  A->>ONB: next_step(app)
+  ONB-->>A: nothing pending, snapshot
+  A-->>FE: application summary
+  alt a required slot is still open
+    FE->>A: "I don't have these"
+    A->>ONB: save_file(slot, missing=true) for each open slot
+    A-->>FE: noted, submit when ready
+  end
   FE->>A: submit
   A->>ONB: submit(app)
-  Note over ONB: submit == evaluate
-  ONB->>ONB: freeze snapshot
+  Note over ONB: rejected if any required slot is still open
   ONB->>ONB: rule pipeline → outcome, missing, assignee, flags
   ONB->>ONB: create review MR-#### once (unless REFUSED)
   ONB-->>A: structured verdict (no prose)
-
-  loop each rule that fired
-    A->>E: embed rule topic
-    A->>A: retrieve policy passage
-  end
+  A->>E: retrieve the passages for the rules that fired
   A->>M: render verdict card from facts + passages
-  A->>A: critic checks citations match, no PII leaked
   A-->>FE: verdict: status, missing, assignee, review id, citations
 ```
 
@@ -180,6 +188,12 @@ sequenceDiagram
   ONB-->>A: MR-#### still IN_REVIEW, unchanged
   A-->>FE: cannot activate, cite ONB-POL-001 §4, review id unchanged
   Note over A,ONB: no tool exists to activate, waive, or change volume
+
+  FE->>A: the missing file
+  A->>ONB: save_file(app, slot, file)
+  ONB->>ONB: same rules again
+  ONB-->>A: updated verdict, same MR-####
+  A-->>FE: updated card, review id unchanged
 ```
 
 ## 5. Decision pipeline (inside ONB, pure rules)

@@ -1,6 +1,6 @@
 # iPe Merchant Onboarding Copilot
 
-A merchant applies for one shop in a web chat. The copilot asks for one thing at a time, takes the documents, and after the merchant presses submit it says whether the shop stays in review or can be recommended for go-live. It names what is missing, cites the policy, and gives a review id. A person at iPe activates the shop. The copilot does not.
+A merchant applies for one shop in one web chat. The copilot asks for one thing at a time, takes the documents, then shows the application and waits. Submit is available only once every required document is uploaded or the merchant has said they do not have it. The verdict says whether the shop stays in review or can be recommended for go-live, names what is missing, cites the policy, and gives a review id. The chat stays open: a missing file can still be added, and the verdict updates without a new review id. A person at iPe activates the shop. The copilot does not.
 
 This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html), with the Android screens rebuilt as a web chat. The build is Track B: a hosted ≤8B chat model and an embeddings endpoint, no weight changes. The API is not selected yet.
 
@@ -37,9 +37,9 @@ flowchart LR
 
 | Piece | Who provides it | What it is |
 |---|---|---|
-| Web chat | Us | The four screens: ask, upload, submit, verdict. The chat stays open after the verdict. |
+| Web chat | Us | One chat, as in the prototype: intake, a review summary, submit, then the verdict. The thread stays open. |
 | Agent service | Us | The only AI. Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
-| ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit, allocates the review id once. No model calls. |
+| ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. No model calls. |
 | Document verifier | Us (mocked) | ONB calls it on `save_file`. Format check + fixture-based accept/reject. Not the LLM. Swap for real PDF/OCR later. |
 | ≤8B chat | Hosted API, not selected | The only language model. Used by the agent. |
 | Embeddings | Hosted API, not selected | Turns text into numbers for policy search. Used by the agent's RAG. |
@@ -53,14 +53,14 @@ The agent is the MCP client. The tool list is closed: there is no activate, waiv
 | `next_step` | Which field or upload is required next. The field order is policy, owned by ONB. |
 | `save_answer` | Store one accepted answer. Rejects an answer for a field that is not pending. |
 | `save_file` | Store the upload, call the mocked Document Verifier. Rejected files do not clear the gap. |
-| `submit` | The only evaluation trigger. Runs the rule engine and returns the structured verdict. |
+| `submit` | First verdict. Refused while a required document is still open. Allocates the review id once, unless the type is refused. A later accepted file re-runs the same rules and keeps that id. |
 | `get_review` | Return the existing review id. Never allocate a new one. |
 
 Policy search is **not** an ONB tool. It is part of the agent's RAG, so ONB stays model-free.
 
 ## Who decides what
 
-- **ONB decides.** On submit, plain rules over a frozen snapshot produce the outcome, missing items, business-type verdict, addendum requirement, and assignee. No model is involved. Unit-testable on its own.
+- **ONB decides.** On submit, and again when a file arrives after submit, plain rules produce the outcome, missing items, business-type verdict, addendum requirement, and assignee. The review id is allocated once. No model is involved. Unit-testable on its own.
 - **RAG cites.** The agent retrieves the policy passage behind a "why?" answer or a citation. Wrong retrieval would mean a wrong citation, never a wrong decision.
 - **The agent speaks.** It plans, calls tools, retrieves, phrases the reply, and the critic checks the citation and strips ID, account, and phone numbers.
 

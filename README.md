@@ -85,7 +85,7 @@ As of 5 Nov 2026. This week is the written design and the practice shops. No age
 - [x] Spec: what the copilot does, what it refuses, and what a correct verdict is. ADR-0001, this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
 - [x] HLD. ADR-0001: two services, five MCP tools, RAG cites only.
 - [x] Gold set. 71 full shops are in [eval/](eval/) (60–100 required). G-001–G-050 to build against, G-051–G-071 once. The checklist under **Correct** is what a good reply has to get right.
-- [ ] LLD. Next. The nine ONB tickets are the outline. The front end to agent message shape is still open.
+- [ ] LLD. The field-by-field design is not written yet. The exact fields the web chat sends to the copilot, and the fields the copilot sends back, are still undecided.
 - [x] Policy corpus started. Done early: 500 documents, 1,446 chunks, commit `1e1c6e0`.
 - [x] Web chat prototype, extra. Live at [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/) from main `/docs`.
 

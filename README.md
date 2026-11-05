@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The frozen gold set and scorer are [gold/](gold/) (102 shops, JSON + specimen files). Until a chat API is available, work is the corpus, HLD, and LLD — not prompting or serving. Do not put `gold/scenarios` into the RAG index.
+The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The Week 1 gold set is not in this repo; the original author will contribute it. Until a chat API is available, work is the corpus, HLD, and LLD — not prompting or serving. Do not put those scenarios into the RAG index.
 
 The interactive prototype (no backend) is the GitHub Pages site: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). Locally, open [docs/index.html](docs/index.html).
 
@@ -70,9 +70,9 @@ Almost all of it lives in the agent; ONB is plain rules and covers no syllabus b
 
 | Track B requirement | Where |
 |---|---|
-| Week 1 gold set, written before the agent | [gold/](gold/): 102 JSON shops + `ground_truth.json`. Tune on `dev` (34). Run `test` (68) once. ONB `submit` is scored against the answer key. |
+| Week 1 gold set, written before the agent | Not in this repo yet. When the original author contributes it: tune on dev, run test once. ONB `submit` is scored against the answer key. |
 | Three prompting strategies | Against the hosted 8B, single prompt, before the agent exists. Keep the notes on how the small model breaks. |
-| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | Agent's RAG. The corpus is the three policies expanded into short cards, paraphrases, and pages that try to override the rules. `why_policy.json` is the citation ground truth. Recall@k is scored on its own. |
+| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | Agent's RAG. The corpus is the policies expanded into short cards, paraphrases, and pages that try to override the rules. Citation labels come with the gold set. Recall@k is scored on its own. |
 | Planner, executor, critic, tools, memory, at most 10 steps | The agent loop over ONB's tools. Memory is the ONB application row, so the review id is the same later in the chat. A bad tool call is retried. |
 | Traces and a failure split | Retrieval miss, wrong next step, bad tool call, made-up policy. |
 | Web UI, container, rate limit, cache | The web chat and the agent. |
@@ -80,7 +80,7 @@ Almost all of it lives in the agent; ONB is plain rules and covers no syllabus b
 
 ## Four weeks
 
-1. Freeze the gold set. Write HLD and LLD. Start the policy corpus.
+1. Gold set arrives from the original author. HLD is written. Finish the LLD. The policy corpus is started.
 2. Finish the corpus. Prompting baselines wait until the chat API is assigned.
 3. Add the agent loop and ONB's tools. The `submit` rule engine owns the outcome.
 4. Ship the web chat, traces, and the Lotus Tea House demo.

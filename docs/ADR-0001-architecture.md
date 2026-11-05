@@ -10,7 +10,7 @@
 
 A merchant applies for one shop in a web chat. The copilot asks for one field at a time, takes document uploads, and only after an explicit submit returns a verdict: the shop stays in review, or go-live may be recommended to a named human role. Every rule it states cites a policy. It never activates a merchant, changes a ceiling, waives a document, or follows an instruction written in the chat or the application.
 
-We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. Until they are, this document is the HLD; LLD and the policy corpus are the next artefacts. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
+We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus is in the repo. The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
 The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** Full-decision accuracy is scored on structured fields, and unauthorized activation is a zero-tolerance safety metric.
 
@@ -43,9 +43,9 @@ The chat follows the prototype: one thread, three phases. The copilot phrases. O
 
 Retrieval (embeddings + hybrid search + rerank) and generation both sit in the copilot. RAG supplies the policy passage behind a "why?" answer and the citation text on the verdict. If retrieval returned the wrong passage, the citation would be wrong but the decision would still be correct, because code computed it. ONB therefore makes zero model calls.
 
-### D5 — The corpus is generated from the policies; the dataset scenarios stay out of the index
+### D5 — The corpus is in the repo; the practice shops stay out of the index
 
-The retrieval corpus (target 500–2,000 chunks) is built from the policies expanded into rule cards, paraphrases, a merchant FAQ, reviewer SOPs, worked examples, and adversarial distractors. The gold set, including the citation labels for recall@k, is not in this repo; the original author will contribute it. Those scenario scripts are the query/eval set and the injection inspiration; embedding them would leak the test set, so they stay out of the index.
+The retrieval corpus is [corpus/](../corpus/): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. The copilot retrieves these after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
 
 ### D6 — One MCP surface
 
@@ -238,8 +238,8 @@ The copilot phrases this into the verdict card. It does not alter any field.
 
 | Track B requirement | Where it lives |
 |---|---|
-| Week 1 frozen gold set + baseline | Not in this repo yet. When it is contributed: tune on dev, run test once. Three single-prompt baselines on the 8B first. |
-| RAG: 500–2,000 docs, hybrid, rerank, recall@k | The copilot's RAG. Corpus generated from policies (D5). Recall@k uses the citation labels that come with the gold set, scored separately from verdict accuracy. |
+| Week 1 gold set + baseline | The 71 shops are in [eval/](../eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
+| RAG: 500–2,000 docs, hybrid, rerank, recall@k | The copilot's RAG over [corpus/](../corpus/) (500 documents, 1,446 chunks). Recall@k is scored separately from the verdict. |
 | Agentic layer: planner/executor/critic, ≥3 tools, memory, ≤10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row. |
 | JSON retry, token budget, error handling | Executor and critic in the copilot. |
 | Observability + failure taxonomy | Traces per step: retrieval miss, wrong next step, bad tool call, hallucinated policy. |
@@ -278,13 +278,12 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 - Policy outcomes are deterministic and unit-testable with no model, which is where accuracy and safety are scored.
 - A weak 8B can only affect wording, not decisions.
 - Clear ownership for six people: FE, copilot, RAG, ONB rules, eval/observability, safety.
-- The corpus doubles as the injection/robustness test set.
+- The corpus is already in the repo, including rejected drafts and pages that try to override the rules.
 
 **Negative / costs**
 
 - Two services and an MCP layer are more plumbing than a single script.
-- Generating a defensible 500–2,000 chunk corpus from three small policies is real work and must avoid scenario leakage.
-- Keeping citations correct is a separate problem from keeping decisions correct, so retrieval needs its own evaluation.
+- Keeping citations correct is a separate problem from keeping decisions correct, so retrieval needs its own evaluation. The practice shops in `eval/` stay out of the index.
 
 **Risks and mitigations**
 

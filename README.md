@@ -72,7 +72,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 |---|---|
 | Week 1 gold set, written before the copilot | [eval/](eval/): 71 full shops. G-001–G-050 to build against, G-051–G-071 once. The **Correct** list is what a good reply has to get right. No runner yet. |
 | Three prompting strategies | Against the hosted 8B, single prompt, before the copilot exists. Keep the notes on how the small model breaks. |
-| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | The copilot's RAG. The corpus is the policies expanded into short cards, paraphrases, and pages that try to override the rules. Citation labels come with the gold set. Recall@k is scored on its own. |
+| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | The copilot's RAG over [corpus/](corpus/): 500 documents, 1,446 chunks. Policies, annexes, briefings, opinions, FAQ, and rejected drafts. Recall@k is scored on its own. `eval/` stays out of the index. |
 | Planner, executor, critic, tools, memory, at most 10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row, so the review id is the same later in the chat. A bad tool call is retried. |
 | Traces and a failure split | Retrieval miss, wrong next step, bad tool call, made-up policy. |
 | Web UI, container, rate limit, cache | The web chat and the copilot. |
@@ -86,12 +86,12 @@ As of 5 Nov 2026. This week is the written design and the practice shops. No cop
 - [x] HLD. ADR-0001: two services, five MCP tools, RAG cites only.
 - [x] Gold set. 71 full shops are in [eval/](eval/) (60–100 required). G-001–G-050 to build against, G-051–G-071 once. The checklist under **Correct** is what a good reply has to get right.
 - [ ] LLD. The field-by-field design is not written yet. The exact fields the web chat sends to the copilot, and the fields the copilot sends back, are still undecided.
-- [x] Policy corpus started. Done early: 500 documents, 1,446 chunks, commit `1e1c6e0`.
+- [x] Policy corpus. [corpus/](corpus/): 500 documents, 1,446 chunks, commit `1e1c6e0`.
 - [x] Web chat prototype, extra. Live at [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/) from main `/docs`.
 
 ## Four weeks
 
 1. Week 1, above: the gold set is in the repo. Finish the LLD. HLD and the corpus are done.
-2. Finish anything left in the corpus. Three single-prompt baselines on the hosted ≤8B, plus notes on how it breaks, once the chat API is assigned.
+2. Three single-prompt baselines on the hosted ≤8B, plus notes on how it breaks, once the chat API is assigned. The corpus is already in the repo.
 3. Add the copilot's loop and ONB's tools. The `submit` rule engine owns the outcome.
 4. Ship the web chat, traces, and the Lotus Tea House demo.

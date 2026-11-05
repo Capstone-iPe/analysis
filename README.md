@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The Week 1 gold set is not in this repo; the original author will contribute it. Until a chat API is available, work is the corpus, HLD, and LLD — not prompting or serving. Do not put those scenarios into the RAG index.
+The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The Week 1 gold set is [eval/](eval/) (71 full shops). Week 1 left is the LLD. Do not put `eval/` into the RAG index. Prompting waits until a chat API is assigned.
 
 The interactive prototype (no backend) is the GitHub Pages site: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). Locally, open [docs/index.html](docs/index.html).
 
@@ -70,7 +70,7 @@ Almost all of it lives in the agent; ONB is plain rules and covers no syllabus b
 
 | Track B requirement | Where |
 |---|---|
-| Week 1 gold set, written before the agent | Not in this repo yet. When the original author contributes it: tune on dev, run test once. ONB `submit` is scored against the answer key. |
+| Week 1 gold set, written before the agent | [eval/](eval/): 71 full shops. G-001–G-050 to build against, G-051–G-071 once. The **Correct** list is what a good reply has to get right. No runner yet. |
 | Three prompting strategies | Against the hosted 8B, single prompt, before the agent exists. Keep the notes on how the small model breaks. |
 | RAG, 500–2,000 documents, hybrid search, reranker, recall@k | Agent's RAG. The corpus is the policies expanded into short cards, paraphrases, and pages that try to override the rules. Citation labels come with the gold set. Recall@k is scored on its own. |
 | Planner, executor, critic, tools, memory, at most 10 steps | The agent loop over ONB's tools. Memory is the ONB application row, so the review id is the same later in the chat. A bad tool call is retried. |
@@ -78,9 +78,20 @@ Almost all of it lives in the agent; ONB is plain rules and covers no syllabus b
 | Web UI, container, rate limit, cache | The web chat and the agent. |
 | Injection tests, PII, a human for the consequential action | The note, the chat, and the corpus are data. ONB has no activate tool. The review goes to the Merchant Risk Lead or the Head of Payments. |
 
+## Week 1 — analysis
+
+As of 5 Nov 2026. This week is the written design and the practice shops. No agent code.
+
+- [x] Spec: what the copilot does, what it refuses, and what a correct verdict is. ADR-0001, this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
+- [x] HLD. ADR-0001: two services, five MCP tools, RAG cites only.
+- [x] Gold set. 71 full shops are in [eval/](eval/) (60–100 required). G-001–G-050 to build against, G-051–G-071 once. The checklist under **Correct** is what a good reply has to get right.
+- [ ] LLD. Next. The nine ONB tickets are the outline. The front end to agent message shape is still open.
+- [x] Policy corpus started. Done early: 500 documents, 1,446 chunks, commit `1e1c6e0`.
+- [x] Web chat prototype, extra. Live at [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/) from main `/docs`.
+
 ## Four weeks
 
-1. Gold set arrives from the original author. HLD is written. Finish the LLD. The policy corpus is started.
-2. Finish the corpus. Prompting baselines wait until the chat API is assigned.
+1. Week 1, above: the gold set is in the repo. Finish the LLD. HLD and the corpus are done.
+2. Finish anything left in the corpus. Three single-prompt baselines on the hosted ≤8B, plus notes on how it breaks, once the chat API is assigned.
 3. Add the agent loop and ONB's tools. The `submit` rule engine owns the outcome.
 4. Ship the web chat, traces, and the Lotus Tea House demo.

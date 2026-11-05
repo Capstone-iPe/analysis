@@ -12,7 +12,7 @@ A merchant applies for one shop in a web chat. The copilot asks for one field at
 
 We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus is in the repo. The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
-The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** Full-decision accuracy is scored on structured fields, and unauthorized activation is a zero-tolerance safety metric.
+The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** The 71 practice shops in [eval/](../eval/) are the check: a reply passes when the **Correct** list for that shop is true. The copilot must not activate a shop.
 
 ## 2. Decisions
 
@@ -200,20 +200,21 @@ sequenceDiagram
 
 ```mermaid
 flowchart TB
-  s[Frozen snapshot] --> t{Business type?}
+  s[Application snapshot] --> t{Business type?}
   t -->|money service, crypto, gambling| ref[REFUSED<br/>no review, no id]
   t -->|restaurant, grocery, retail| chk
-  t -->|not listed| unl[allowed = null] --> chk
+  t -->|not listed| unl[IN_REVIEW<br/>type not covered]
   chk[Check pack + addendum] --> miss{Any item missing<br/>or invalid?}
   miss -->|yes| rev[IN_REVIEW]
   miss -->|no| go[RECOMMEND_GO_LIVE]
+  unl --> vol
   rev --> vol
   go --> vol
   vol{Volume vs ₹40,00,000} -->|at or under| lead[Merchant Risk Lead]
   vol -->|above| hop[Head of Payments<br/>note POL-001 §4 vs POL-002]
 ```
 
-Rule inputs, all from the snapshot: the six answers, each document's validity (bank proof in legal name, shopfront photo ≤ 90 days at submission, addendum signed, registration is a registration), and whether payer phones are stored. Uploaded never means accepted.
+Rule inputs, all from the snapshot: the six answers, each document's validity (bank proof in legal name, shopfront photo ≤ 90 days at submission, addendum signed, registration is a registration), and whether payer phones are stored. Uploaded never means accepted. A type that is not listed stays in review even when the pack is complete (ONB-POL-001 §3.3). Volume still chooses the Merchant Risk Lead or the Head of Payments.
 
 ## 6. Verdict object (ONB → copilot)
 

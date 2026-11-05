@@ -45,7 +45,7 @@ Retrieval (embeddings + hybrid search + rerank) and generation both sit in the a
 
 ### D5 — The corpus is generated from the policies; the dataset scenarios stay out of the index
 
-The retrieval corpus (target 500–2,000 chunks) is built from the three policies expanded into rule cards, paraphrases, a merchant FAQ, reviewer SOPs, worked examples, and adversarial distractors. `ground_truth/why_policy.json` is the citation ground truth and the recall@k label source. The `scenarios/*` scripts are the query/eval set and the injection inspiration; embedding them would leak the test set, so they are excluded from the index.
+The retrieval corpus (target 500–2,000 chunks) is built from the policies expanded into rule cards, paraphrases, a merchant FAQ, reviewer SOPs, worked examples, and adversarial distractors. The gold set, including the citation labels for recall@k, is not in this repo; the original author will contribute it. Those scenario scripts are the query/eval set and the injection inspiration; embedding them would leak the test set, so they stay out of the index.
 
 ### D6 — One MCP surface
 
@@ -238,8 +238,8 @@ The agent phrases this into the verdict card. It does not alter any field.
 
 | Track B requirement | Where it lives |
 |---|---|
-| Week 1 frozen gold set + baseline | The 102 dataset scenarios. Tune on dev, run test once. Three single-prompt baselines on the 8B first. |
-| RAG: 500–2,000 docs, hybrid, rerank, recall@k | Agent's RAG. Corpus generated from policies (D5). Recall@k labelled from `why_policy.json`, scored separately from verdict accuracy. |
+| Week 1 frozen gold set + baseline | Not in this repo yet. When it is contributed: tune on dev, run test once. Three single-prompt baselines on the 8B first. |
+| RAG: 500–2,000 docs, hybrid, rerank, recall@k | Agent's RAG. Corpus generated from policies (D5). Recall@k uses the citation labels that come with the gold set, scored separately from verdict accuracy. |
 | Agentic layer: planner/executor/critic, ≥3 tools, memory, ≤10 steps | Agent loop + ONB's tools. Memory is the ONB application row. |
 | JSON retry, token budget, error handling | Executor and critic in the agent. |
 | Observability + failure taxonomy | Traces per step: retrieval miss, wrong next step, bad tool call, hallucinated policy. |
@@ -267,7 +267,7 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 | S24 | LangChain / LangGraph | The agent loop implementation |
 | S19–S21 | VLM, multimodal prompting, multimodal RAG | Optional: read shopfront date stamp or photographed ID in the Documents validation |
 | S27 / S29 | Responsible and trusted AI | No activation; PII redaction in the critic; human boundary |
-| S28 | FastAPI, real-time vs batch | Agent and ONB as FastAPI services; chat real-time, 102-scenario eval as batch |
+| S28 | FastAPI, real-time vs batch | Agent and ONB as FastAPI services; chat real-time, the gold-set eval as a batch |
 | S31 | MCP, orchestration frameworks | MCP surface between agent and ONB |
 | S32 | Capstone evaluation | recall@k, full-decision accuracy, failure taxonomy |
 

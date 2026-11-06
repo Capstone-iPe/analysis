@@ -248,9 +248,9 @@ function renderIntakeComposer() {
 function renderReviewComposer() {
   const missing = openGaps();
   if (missing.length) {
-    const chips = missing.map(slot =>
-      `<button class="chip primary" type="button" data-act="open-picker" data-slot="${slot}">Upload ${DOC_LABEL[slot]}</button>`
-    ).join("") + `<button class="chip" type="button" data-act="confirm-missing">I don't have these</button>`;
+    const slot = missing[0];
+    const chips = `<button class="chip primary" type="button" data-act="open-picker" data-slot="${slot}">Upload ${DOC_LABEL[slot]}</button>`
+      + `<button class="chip" type="button" data-act="confirm-missing">I don't have these</button>`;
     composer.innerHTML = chipsRow(chips) + inputRow("Message");
   } else {
     composer.innerHTML = chipsRow(
@@ -302,7 +302,11 @@ async function handleTyped(text) {
     push({ role: "user", text });
     if (/submit/.test(low) && !openGaps().length) { await doSubmit(); return; }
     if (/submit/.test(low)) { await say("A few documents are still open, so I can't take a submit yet. Upload them, or say you don't have them."); return; }
-    await say("Tell me which answer to change, or use the options below.");
+    if (openGaps().length) {
+      await say("Those answers stay as stored. Upload the document that is still open, or say you don't have it.");
+    } else {
+      await say("Those answers stay as stored. Submit when you're ready.");
+    }
     return;
   }
   const n = nextField();

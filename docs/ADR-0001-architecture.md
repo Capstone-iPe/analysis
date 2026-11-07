@@ -33,7 +33,7 @@ Application answers, document states, the policy version, and the review id live
 
 The chat follows the prototype: one thread, three phases. The copilot phrases. ONB owns the phase, the pending field, and the verdict.
 
-**Intake.** Field order is `shop_name`, `city`, `business_type`, `monthly_volume`, `payment_methods`, `stores_payer_phones`, then `business_registration`, `owner_id`, `bank_proof`, `shopfront_photo`, then `dpa_addendum` only when payer phones are stored, then an optional `note`. One pending field at a time. A "why?" does not save the field and asks it again. An upload slot closes only when the verifier accepts the file or the merchant says they do not have it. A rejected or wrong-format file leaves that same slot pending.
+**Intake.** Field order is `shop_name`, `city`, `business_type`, `monthly_volume`, `payment_methods`, `stores_payer_phones`, then `business_registration`, `owner_id`, `bank_proof`, `shopfront_photo`, then `dpa_addendum` only when payer phones are stored, then an optional `note`. One pending field at a time. Before submit, `save_answer` may replace an answer already stored, including the monthly volume, when the new value is a readable figure. A sentence that is not digits does not replace the stored volume. After the verdict, stored answers stay as stored. A "why?" does not save the field and asks it again. An upload slot closes only when the verifier accepts the file or the merchant says they do not have it. A rejected or wrong-format file leaves that same slot pending.
 
 **Review.** When nothing is pending, the copilot shows the application summary from `next_step`. Submit stays disabled while any required slot is still open. "I don't have these" marks the open slots missing and does not submit by itself.
 
@@ -82,7 +82,7 @@ flowchart LR
 | Tool | Direction | Purpose |
 |---|---|---|
 | `next_step(application_id?)` | read | Which field or upload is required next, plus the current snapshot (answers + file states) so the copilot can render the review draft. Called with no id on turn one, which **implicitly creates** the application and returns its id. Field order is policy, owned by ONB. |
-| `save_answer(application_id, field, value)` | write | Store one accepted answer. Rejects an answer for a field that is not pending. |
+| `save_answer(application_id, field, value)` | write | Store the pending answer, or replace an answer already stored before submit. After the verdict, a stored answer stays as stored. |
 | `save_file(application_id, slot, file?, missing=false)` | write | Store a real upload, then call Document Verifier. `missing=true` closes the slot, including every still-open slot when the merchant says "I don't have these" on the review step. "Attached" with no file does not count. A rejected file leaves the slot pending. After submit, an accepted file re-runs the rules and returns the updated verdict with the same review id. |
 | `submit(application_id)` | write | First verdict. Rejected while any required slot is neither accepted nor marked missing. Allocates the review id once, unless the type is refused. |
 | `get_review(application_id)` | read | Returns the existing review id. Never allocates a new one. |

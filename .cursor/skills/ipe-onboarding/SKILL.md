@@ -29,7 +29,7 @@ ONB exposes five tools. The copilot calls them. The copilot does not decide fiel
 | Tool | What it does |
 |---|---|
 | `next_step` | Returns the one pending field or upload. No id creates the application. |
-| `save_answer` | Stores the pending text field. |
+| `save_answer` | Stores the pending text field, or replaces an answer already stored before submit. After the verdict, a stored answer stays as stored. |
 | `save_file` | Stores the pending upload, or marks that slot missing. After the verdict, a file for a missing slot updates the verdict and keeps the review id. |
 | `submit` | Runs the rules and allocates one review id, unless the type is refused. |
 | `get_review` | Returns the stored verdict. It does not allocate an id. |

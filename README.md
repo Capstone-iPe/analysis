@@ -51,7 +51,7 @@ The copilot is the MCP client. The tool list is closed: there is no activate, wa
 | Tool | Job |
 |---|---|
 | `next_step` | Which field or upload is required next. The field order is policy, owned by ONB. |
-| `save_answer` | Store one accepted answer. Rejects an answer for a field that is not pending. |
+| `save_answer` | Store the pending answer, or replace an answer already stored before submit. After the verdict, a stored answer stays as stored. |
 | `save_file` | Store the upload, call the mocked Document Verifier. Rejected files do not clear the gap. |
 | `submit` | First verdict. Refused while a required document is still open. Allocates the review id once, unless the type is refused. A later accepted file re-runs the same rules and keeps that id. |
 | `get_review` | Return the existing review id. Never allocate a new one. |

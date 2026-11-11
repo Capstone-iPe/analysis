@@ -79,7 +79,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 
 ## Capstone weeks (Track B)
 
-Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf). Product code is in `copilot-svc` and `onb-svc`.
+Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf). Product code is in `copilot-svc`, `onb-svc`, and `copilot-web-app`.
 
 ### Week 1 — task decomposition + prompting baseline
 

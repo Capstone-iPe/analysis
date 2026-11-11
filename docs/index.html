@@ -2,61 +2,130 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>iPe — Onboarding</title>
-  <link rel="stylesheet" href="assets/prototype.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>iPe — Capstone mentor dashboard</title>
+  <link rel="stylesheet" href="assets/dashboard.css" />
 </head>
 <body>
-  <div class="app">
-    <aside class="rail">
-      <div class="rail-brand">iPe<span>Payments for shops</span></div>
-      <div>
-        <div class="rail-section-label">This shop</div>
-        <div class="rail-app">
-          <div class="name" id="rail-shop">New application</div>
-          <div class="sub" id="rail-id">Not submitted</div>
-          <span class="rail-status" id="rail-status">Draft</span>
-        </div>
-      </div>
-      <div>
-        <div class="rail-section-label">Application</div>
-        <div class="rail-steps" id="rail-steps"></div>
-      </div>
-      <div class="rail-foot">
-        <button type="button" id="new-app">New application</button>
-        <p class="legal">Only the Merchant Risk Lead can turn a shop on. This chat prepares the review.</p>
-      </div>
-    </aside>
+  <div class="wrap">
+    <header class="hero">
+      <h1 class="brand">iPe<span>Merchant onboarding copilot · Track B mentor view</span></h1>
+      <p class="lede">
+        Progress by Capstone week, with a short TL;DR and links into the evidence.
+        Product code lives in <code>copilot-svc</code> and <code>onb-svc</code>; this repo holds the ADR, corpus, eval set, and write-ups.
+      </p>
+      <ul class="quick">
+        <li><a href="prototype/">Chat prototype</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/ADR-0001-architecture.md">ADR-0001</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md">Repo README</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/tree/main/eval">Gold set (71 shops)</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/tree/main/corpus">Policy corpus</a></li>
+        <li><a href="https://github.com/Capstone-iPe/copilot-svc">copilot-svc</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-svc">onb-svc</a></li>
+        <li><a href="https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html">IPE-PRD-001</a></li>
+      </ul>
+    </header>
 
-    <main class="main">
-      <div class="app-header">
-        <button type="button" class="menu-btn" id="menu-btn" aria-label="Open menu">
-          <span></span><span></span><span></span>
-        </button>
-        <div class="titles">
-          <h1>Onboarding</h1>
-          <p id="hdr-sub">Your shop</p>
-        </div>
-        <span class="status-pill draft" id="hdr-status">Draft</span>
+    <section class="week" id="week-1">
+      <div class="week-head">
+        <h2>Week 1 — Spec, gold set, prompting</h2>
+        <span class="pill done">Mostly done</span>
       </div>
-      <div class="chat" id="chat"><div class="chat-inner" id="chat-inner"></div></div>
-      <div class="composer">
-        <div class="composer-inner" id="composer"></div>
+      <p class="tldr">
+        <strong>TL;DR:</strong> Spec and 71-shop gold set are frozen. Three single-prompt baselines on Qwen3-8B:
+        structured few-shot <strong>6/10</strong>; CoT and decomposition <strong>0/10</strong>.
+        Product keeps structured intent labels; decisions stay in code + ONB.
+      </p>
+      <ul class="checks">
+        <li class="ok">I · Spec / refusals / correct answer (ADR + README + PRD)</li>
+        <li class="ok">I · Gold set — 71 shops in <code>eval/</code> (G-001–050 build, G-051–071 holdout)</li>
+        <li class="ok">II · Prompting comparison + break notes + what we kept</li>
+        <li class="todo">LLD (ours) — FE ↔ copilot fields not frozen yet</li>
+      </ul>
+      <ul class="dives">
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/prompting-baseline.md">Deep dive · prompting baseline</a></li>
+        <li><a href="prompting-baseline-results.json">Raw results JSON</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/ADR-0001-architecture.md">Deep dive · ADR-0001</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/eval/README.md">Deep dive · eval table</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/eval/cases/G-001.md">Example · Lotus Tea House (G-001)</a></li>
+      </ul>
+    </section>
+
+    <section class="week" id="week-2">
+      <div class="week-head">
+        <h2>Week 2 — RAG</h2>
+        <span class="pill progress">In progress</span>
       </div>
-    </main>
+      <p class="tldr">
+        <strong>TL;DR:</strong> 500-doc corpus with hybrid search (BM25 + dense) and a reranker in the copilot.
+        Citation-grounded why-path is live. Still open: documented retrieval experiments and <strong>recall@k</strong> scored apart from shop replay.
+      </p>
+      <ul class="checks">
+        <li class="ok">Corpus size in range (500 docs; cap 2,000)</li>
+        <li class="ok">Chunking + hybrid + reranker implemented</li>
+        <li class="ok">RAG cites; ONB decides the verdict</li>
+        <li class="todo">Chunking / hybrid / rerank experiment write-up</li>
+        <li class="todo">recall@4 and recall@8 on a fixed question set</li>
+      </ul>
+      <ul class="dives">
+        <li><a href="https://github.com/Capstone-iPe/analysis/tree/main/corpus">Deep dive · corpus/</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#week-2--rag">Deep dive · Week 2 checklist</a></li>
+        <li><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/src/copilot/corpus/index_corpus.py">Deep dive · search code</a></li>
+      </ul>
+    </section>
+
+    <section class="week" id="week-3">
+      <div class="week-head">
+        <h2>Week 3 — Agentic layer + eval</h2>
+        <span class="pill progress">In progress</span>
+      </div>
+      <p class="tldr">
+        <strong>TL;DR:</strong> Hand-rolled loop over five ONB MCP tools (decide → act → say/critic).
+        Application state and review id live in ONB. Replay runner exists; failure taxonomy and a trace dashboard are still open.
+      </p>
+      <ul class="checks">
+        <li class="ok">≥3 tools (five MCP tools) + persistent ONB state</li>
+        <li class="ok">Planner/executor/critic-shaped path; classifier JSON schema + retry</li>
+        <li class="todo">E2E accuracy numbers written into the report</li>
+        <li class="todo">Failure taxonomy (retrieval / next step / tool / hallucination)</li>
+        <li class="todo">Tracing dashboard (or exported per-turn traces)</li>
+      </ul>
+      <ul class="dives">
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/ADR-0001-architecture.md">Deep dive · two-service tool wall</a></li>
+        <li><a href="https://github.com/Capstone-iPe/copilot-svc">Deep dive · copilot-svc</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-svc">Deep dive · onb-svc</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#week-3--agentic-layer">Deep dive · Week 3 checklist</a></li>
+      </ul>
+    </section>
+
+    <section class="week" id="week-4">
+      <div class="week-head">
+        <h2>Week 4 — Ship + responsible AI</h2>
+        <span class="pill open">Open</span>
+      </div>
+      <p class="tldr">
+        <strong>TL;DR:</strong> CLI demo path is usable; live web ↔ copilot integration, container/rate-limit/cache, and the 12-page report are still ahead.
+        Responsible-AI baseline already includes injection refusals, digit redaction, no activate tool, and a human for go-live.
+      </p>
+      <ul class="checks">
+        <li class="ok">Responsible-AI baseline (guards, redact, no activate, human-in-the-loop)</li>
+        <li class="todo">FE wired to the copilot (prototype only today)</li>
+        <li class="todo">Container + rate limit + cache</li>
+        <li class="todo">Technical report + 10-minute demo</li>
+      </ul>
+      <ul class="dives">
+        <li><a href="prototype/">Deep dive · interactive prototype</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#submission-checklist-cli-first">Deep dive · CLI submission checklist</a></li>
+        <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#week-4--ship-it">Deep dive · Week 4 checklist</a></li>
+      </ul>
+    </section>
+
+    <p class="foot">
+      Hosted from the <code>docs/</code> folder on
+      <a href="https://github.com/Capstone-iPe/analysis">Capstone-iPe/analysis</a>.
+      Capstone template weeks I–VI map to the sections above.
+      Last focused evidence drop: Week 1 prompting baseline on Qwen3-8B.
+    </p>
   </div>
-
-  <div class="nav-scrim hidden" id="nav-scrim"></div>
-  <div class="picker-scrim hidden" id="picker" role="dialog" aria-label="Choose a file">
-    <div class="picker">
-      <header>
-        <strong id="picker-title">Choose a file</strong>
-        <button type="button" id="picker-close">Cancel</button>
-      </header>
-      <ul id="picker-list"></ul>
-    </div>
-  </div>
-
-  <script src="assets/app.js"></script>
 </body>
 </html>

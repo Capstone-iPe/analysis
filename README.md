@@ -95,3 +95,31 @@ As of 5 Nov 2026. This week is the written design and the practice shops. No cop
 2. Three single-prompt baselines on the hosted ≤8B, plus notes on how it breaks, once the chat API is assigned. The corpus is already in the repo.
 3. Add the copilot's loop and ONB's tools. The `submit` rule engine owns the outcome.
 4. Ship the web chat, traces, and the Lotus Tea House demo.
+
+## Submission checklist (CLI first)
+
+Product code lives in `copilot-svc` and `onb-svc`. This list is what is still needed to submit with a **CLI-only** demo. Revisit the web rows after FE ↔ copilot integration.
+
+### Ready for a CLI demo
+
+- [x] ADR-0001 two services; five ONB MCP tools; no activate tool
+- [x] Copilot CLI: one merchant line → intent → at most one tool → fixed or RAG reply
+- [x] Guards, refusals, digit redaction, critic on model sentences
+- [x] Replay runner against [eval/](eval/): G-001–G-050 while building; G-051–G-071 holdout once
+- [x] Unit and adversarial tests in `copilot-svc`
+- [x] Corpus indexed for RAG (≥500 docs); `eval/` stays out of the index
+
+### Still open before CLI submission
+
+- [ ] **copilot-svc README** — how to run the CLI, build the index, set `CHAT_API_KEY`, and run replay / holdout
+- [ ] **Prompting notes** — three strategies on the ≤8B and how the small model breaks (Track B row; write-up, not more architecture)
+- [ ] **recall@k** — scored retrieval set (question → expected document ids); report recall@4 and recall@8
+- [ ] **Failure taxonomy** — short split with traces: retrieval miss, wrong next step, bad tool call, made-up policy
+- [ ] Label the demo as **CLI-only** so web UI, container, rate limit, and cache are not claimed as done
+
+### Deferred until web integration
+
+- [ ] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). Contract not frozen here
+- [ ] Conversation history for the chat UX (not used to decide tools or the verdict)
+- [ ] Web UI, container, rate limit, cache
+- [ ] End-to-end Lotus Tea House through the web chat

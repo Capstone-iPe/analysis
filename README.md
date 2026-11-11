@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The Week 1 gold set is [eval/](eval/) (71 full shops). Week 1 left is the LLD. Do not put `eval/` into the RAG index. Prompting waits until a chat API is assigned.
+The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf).
 
 The interactive prototype (no backend) is the GitHub Pages site: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). Locally, open [docs/index.html](docs/index.html).
 
@@ -66,39 +66,56 @@ Policy search is **not** an ONB tool. It is part of the copilot's RAG, so ONB st
 
 ## Where Track B goes
 
-Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus by design.
+Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus by design. Weeks match the Track B template (I–VI).
 
-| Track B requirement | Where |
-|---|---|
-| Week 1 gold set, written before the copilot | [eval/](eval/): 71 full shops. G-001–G-050 to build against, G-051–G-071 once. The **Correct** list is what a good reply has to get right. No runner yet. |
-| Three prompting strategies | Against the hosted 8B, single prompt, before the copilot exists. Keep the notes on how the small model breaks. |
-| RAG, 500–2,000 documents, hybrid search, reranker, recall@k | The copilot's RAG over [corpus/](corpus/): 500 documents, 1,446 chunks. Policies, annexes, briefings, opinions, FAQ, and rejected drafts. Recall@k is scored on its own. `eval/` stays out of the index. |
-| Planner, executor, critic, tools, memory, at most 10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row, so the review id is the same later in the chat. A bad tool call is retried. |
-| Traces and a failure split | Retrieval miss, wrong next step, bad tool call, made-up policy. |
-| Web UI, container, rate limit, cache | The web chat and the copilot. |
-| Injection tests, PII, a human for the consequential action | The note, the chat, and the corpus are data. ONB has no activate tool. The review goes to the Merchant Risk Lead or the Head of Payments. |
+| Template | Track B requirement | Where |
+|---|---|---|
+| I · Week 1 | Spec + gold set (60–100) before agent code | [eval/](eval/): 71 shops. G-001–G-050 to build against, G-051–G-071 once. **Correct** is the gold answer. |
+| II · Week 1 | Three prompting strategies + how the ≤8B breaks | Single-prompt baselines on the hosted chat API. Write-up still open. |
+| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [corpus/](corpus/): 500 docs, 1,446 chunks. Copilot hybrid search + rerank. Recall@k still to score. `eval/` stays out of the index. |
+| IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
+| V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Taxonomy and a trace dashboard still open. |
+| VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat + copilot deploy. Injection, PII, no activate tool, human for go-live. |
 
-## Week 1 — analysis
+## Capstone weeks (Track B)
 
-As of 5 Nov 2026. This week is the written design and the practice shops. No copilot code.
+Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf). Product code is in `copilot-svc` and `onb-svc`.
 
-- [x] Spec: what the copilot does, what it refuses, and what a correct verdict is. [ADR-0001](docs/ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
-- [x] HLD. [ADR-0001](docs/ADR-0001-architecture.md): two services, five MCP tools, RAG cites only.
-- [x] Gold set. 71 full shops are in [eval/](eval/) (60–100 required). G-001–G-050 to build against, G-051–G-071 once. The checklist under **Correct** is what a good reply has to get right.
-- [ ] LLD. The field-by-field design is not written yet. The exact fields the web chat sends to the copilot, and the fields the copilot sends back, are still undecided.
-- [x] Policy corpus. [corpus/](corpus/): 500 documents, 1,446 chunks, commit `1e1c6e0`.
-- [x] Web chat prototype, extra. Live at [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/) from main `/docs`.
+### Week 1 — task decomposition + prompting baseline
 
-## Four weeks
+- [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](docs/ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
+- [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
+- [ ] **II.** Three single-prompt strategies on the hosted ≤8B (e.g. structured few-shot, CoT / self-consistency, decomposition) and notes on how the small model breaks.
+- [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
+- [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy corpus started in [corpus/](corpus/); web prototype at [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/).
 
-1. Week 1, above: the gold set is in the repo. Finish the LLD. HLD and the corpus are done.
-2. Three single-prompt baselines on the hosted ≤8B, plus notes on how it breaks, once the chat API is assigned. The corpus is already in the repo.
-3. Add the copilot's loop and ONB's tools. The `submit` rule engine owns the outcome.
-4. Ship the web chat, traces, and the Lotus Tea House demo.
+### Week 2 — RAG
+
+- [x] Corpus size in range: [corpus/](corpus/) has 500 documents (cap 2,000).
+- [x] Chunking, hybrid retrieval (keyword + dense), and a reranker exist in `copilot-svc`.
+- [x] Citation-grounded why / explain path (RAG cites; ONB decides).
+- [ ] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps).
+- [ ] **recall@k** measured separately from end-to-end answer quality (e.g. recall@4 and recall@8).
+
+### Week 3 — agentic layer
+
+- [x] Tool-using loop over at least three tools (five ONB MCP tools).
+- [x] Explicit decide → act → say/critic path; persistent application state in ONB; ≤10 steps.
+- [x] Error handling for bad labels, tool errors, and refusals (JSON schema on intent; retries on the classifier).
+- [ ] End-to-end accuracy write-up against the Week 1 set (replay numbers recorded in the report).
+- [ ] Failure taxonomy: retrieval miss, reasoning / wrong next step, tool-call error, hallucination / made-up policy.
+- [ ] Tracing dashboard (LangSmith, Langfuse, or OpenTelemetry) — or export of the per-turn `trace` log.
+
+### Week 4 — ship it
+
+- [ ] Streamlit or React front-end wired to the copilot (prototype exists; live backend integration open).
+- [ ] Containerised deploy with rate limiting and caching.
+- [x] Responsible-AI baseline: injection tests / adversarial lines, digit redaction, no activate tool, human-in-the-loop for go-live.
+- [ ] 12-page technical report and 10-minute demo (CLI first is fine until web is wired).
 
 ## Submission checklist (CLI first)
 
-Product code lives in `copilot-svc` and `onb-svc`. This list is what is still needed to submit with a **CLI-only** demo. Revisit the web rows after FE ↔ copilot integration.
+Use this while the web rows above stay open. Revisit after FE ↔ copilot integration.
 
 ### Ready for a CLI demo
 
@@ -112,10 +129,10 @@ Product code lives in `copilot-svc` and `onb-svc`. This list is what is still ne
 ### Still open before CLI submission
 
 - [ ] **copilot-svc README** — how to run the CLI, build the index, set `CHAT_API_KEY`, and run replay / holdout
-- [ ] **Prompting notes** — three strategies on the ≤8B and how the small model breaks (Track B row; write-up, not more architecture)
-- [ ] **recall@k** — scored retrieval set (question → expected document ids); report recall@4 and recall@8
-- [ ] **Failure taxonomy** — short split with traces: retrieval miss, wrong next step, bad tool call, made-up policy
-- [ ] Label the demo as **CLI-only** so web UI, container, rate limit, and cache are not claimed as done
+- [ ] **Week 1-II prompting notes** — three strategies and how the ≤8B breaks
+- [ ] **Week 2 recall@k** — scored retrieval set; report recall@4 and recall@8
+- [ ] **Week 3–4 failure taxonomy + traces** — retrieval miss, wrong next step, bad tool call, made-up policy
+- [ ] Label the demo as **CLI-only** so Week 4 UI / container / rate limit / cache are not claimed as done
 
 ### Deferred until web integration
 

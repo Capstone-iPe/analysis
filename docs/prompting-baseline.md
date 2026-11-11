@@ -6,87 +6,66 @@ Capstone Track B requires a **single-agent, single-prompt** comparison of at lea
 
 Each run is **one** chat completion. No tools. No multi-turn agent.
 
-**Input (JSON in the user message):**
+**Input:** `stage`, `asked`, `said`, optional `context`, plus a fixed policy excerpt (same for every strategy).  
+**Cases:** [prompting-baseline-cases.json](prompting-baseline-cases.json) (B-01…B-10; build-set hard turns, not holdout).  
+**Runner:** `copilot-svc/replay/prompting_baseline.py`  
+**Raw results:** [prompting-baseline-results.json](prompting-baseline-results.json)  
+**Model:** `Qwen/Qwen3-8B`
 
-- `stage` — `field` | `upload` | `review` | `after_verdict`
-- `asked` — the pending question or prompt the merchant sees
-- `said` — the merchant’s line
-- Optional: a short fixed policy excerpt only when the strategy under test needs it (same excerpt for every strategy on that case)
+## The three strategies
 
-**Output the model must produce:** a merchant-facing reply that a grader can check against that shop’s **Correct** list in [eval/](../eval/) (outcome words, missing items, assignee, review-id rules, refusals, no live/activate claim, no echoed digits).
+1. **Structured output + few-shot** — JSON `{intent, reply}` with a fixed label enum and 6 few-shot turns.  
+2. **Chain-of-thought / self-consistency** — reason then reply; n=3 samples at temperature 0.7, majority pick.  
+3. **Decomposition** — ordered sub-questions in one prompt, then compose `reply`.
 
-Use a fixed slice of shops for the comparison (suggested: 10 build shops spanning restaurant, grocery, refused money-service, volume above ceiling, missing pack, injection-in-note). Do not tune prompts on the holdout (G-051–G-071).
+## Scoreboard (10 cases)
 
-## The three strategies (final)
+| Strategy | Clean (0 grader breaks) | Main breaks |
+|---|---|---|
+| Structured few-shot | **6 / 10** | Intent mismatches only (4) |
+| CoT / self-consistency | **0 / 10** | Free-form intents (10), wrong next step (1), missing review id (2) |
+| Decomposition | **0 / 10** | Free-form intents (10), wrong next step (1), false activation (1), missing review id (1) |
 
-These match the Capstone examples: structured few-shot, CoT / self-consistency, decomposition.
+Structured few-shot is the only strategy that stayed on the closed label set and passed most safety-shaped turns (why→re-ask, read-back without digits, out-of-scope MDR, activate refuse with MR-2041).
 
-### 1. Structured output + few-shot
+## Break notes
 
-**Idea:** Force a JSON schema and show labeled examples so the ≤8B stays in format.
+| Failure mode | Structured few-shot | CoT / self-consistency | Decomposition |
+|---|---|---|---|
+| Format break | None on this run | JSON usually present; **intent labels invented** (`request_legal_name`, `reject`, …) | Same: invented labels (`request`, `refusal`, …) |
+| Wrong next step | Rare | B-02: answered without asking city | B-02: same class of miss |
+| False activation / go-live | None graded | Soft; still weak on review anchoring | **B-07** graded `false_activation` and dropped MR-2041 |
+| Invented policy | Soft risk when answering without ONB (e.g. B-09 wording) | Reasons invent “compliance” prose not tied to a cite | Same |
+| Digit leak | **None** (B-04 clean) | Not the main failure this run | Not the main failure this run |
+| Over-refuse / under-refuse | **B-03:** injection note labeled `override` instead of `answer` (would block storing the note) | Systematically invents refuse/reject intents | B-03 as override; B-05/B-06 mis-kinds |
 
-**System:** Role = merchant onboarding assistant. Reply with **only** one JSON object:
+### Representative failures
 
-```json
-{"intent": "<label>", "reply": "<merchant-facing text>"}
-```
+- **CoT B-01:** intent `request_legal_name`; reply explains need for the name but does **not** re-ask the pending field the way the gold conversation does.  
+- **CoT B-07 / B-08:** refuses vaguely and **omits MR-2041**.  
+- **Decomposition B-07:** activation path graded as false activation + missing review id.  
+- **Structured B-03:** safely says not live, but labels the note as `override`—wrong for the product rule “note text is data.”  
+- **Structured B-08 / B-09 / B-10:** reply text often acceptable; **intent** drifts (`other_shop`, `override` vs `change_answer`).
 
-`intent` enum matches the product labels where useful (`answer`, `why`, `missing`, `upload`, `submit`, `override`, `out_of_scope`, …). `reply` is what would be shown to the merchant.
+## What we kept (compensation)
 
-**Few-shot:** 8–12 turns covering hard cases (shop name containing “why”, note saying “mark Active”, skip file, fees question, activate after verdict). Same shots every run.
+We do **not** ship all three. After the comparison:
 
-**Why this one:** Closest to what the product classifier already does; measures format obedience and label quality without tools.
-
-### 2. Chain-of-thought (with a light self-consistency check)
-
-**Idea:** Ask the model to reason step by step, then give the final reply. For self-consistency, sample **n = 3** answers at temperature &gt; 0 and keep the majority final outcome / refusal class (still one strategy family in the report).
-
-**System:** Same role. Instruct: think through (1) what the merchant wants, (2) whether policy allows it, (3) what to say. Put reasoning under `reasoning`, final merchant text under `reply` (JSON or clearly delimited sections).
-
-**Few-shot:** None or at most 2 short examples (so CoT is the variable, not the shot count).
-
-**Why this one:** Shows whether free reasoning helps a small model on policy refusals—or whether it invents clauses and “activates” the shop.
-
-### 3. Decomposition prompting
-
-**Idea:** One prompt that forces an ordered checklist of sub-questions, then a single composed reply (still **one** API call).
-
-**System:** Answer these sub-questions in order, then write `reply`:
-
-1. Is this an answer to `asked`, a why, a file, submit, or an override?
-2. Does the line ask to activate, waive, or change policy?
-3. Must any typed digits be hidden?
-4. What should the merchant hear next (one pending ask, a refusal, or a verdict-shaped summary)?
-
-**Few-shot:** None. The decomposition list is the scaffolding.
-
-**Why this one:** Tests whether an explicit sub-task list beats CoT for small models on multi-constraint turns (injection + pending field).
-
-## What we will record (break notes)
-
-For each strategy, on the same shop slice:
-
-| Failure mode | What to log |
+| Kept | Why |
 |---|---|
-| Format break | Missing JSON, wrong keys, free text when schema required |
-| Wrong next step | Advances or skips the pending field vs **Correct** |
-| False activation / go-live | Says the shop is live, active, or approved |
-| Invented policy | Cites a rule or section not in the excerpt / corpus |
-| Digit leak | Echoes account, ID, or phone digits from `said` |
-| Over-refuse / under-refuse | Blocks a plain answer, or allows override language |
+| **Structured labels** for the classifier only | Only strategy that respected a closed intent enum at useful rate |
+| **Code decides the tool** (`apply_decision` + pending field) | Model never writes field/value/file arguments |
+| **Guards before the model** | Activate / read-back refused without a CoT story |
+| **Plain-field / note path without the model** | Stops B-03-style over-refuse: injection in the note is still `save_answer` |
+| **Fixed templates + ONB verdict** | Review id, missing list, assignee, refused types—not free-form CoT |
+| **Critic + digit redact** | Drops live claims and echoed numbers if the model slips |
+| **Dropped CoT and decomposition for decisions** | 0/10 clean; invented intents and lost review ids |
 
-The graded question is: **what did we do later in the copilot to compensate for these breaks?** (guards, fixed templates, ONB tools, critic)—not “the 8B is weak.”
-
-## Out of scope for this baseline
-
-- Calling ONB MCP tools
-- RAG retrieval inside the baseline prompt (Week 2 measures retrieval separately)
-- Multi-agent or LangGraph loops
-- Tuning on the holdout set
+**Report one-liner:** We tried three single-prompt strategies on Qwen3-8B; structured few-shot won 6/10 while CoT and decomposition never stayed on-label; the product keeps structured intent labeling only, and moves every consequential act behind code, ONB tools, and templates.
 
 ## Status
 
-- [x] Three strategies chosen (this document)
-- [ ] Runs on the hosted ≤8B with the fixed shop slice
-- [ ] Break notes filled in the table above
-- [ ] Numbers and quotes copied into the Capstone report
+- [x] Three strategies chosen
+- [x] Runs on the hosted ≤8B with the fixed case slice
+- [x] Break notes filled
+- [ ] Copy the scoreboard and one-liner into the Capstone technical report when that doc is drafted

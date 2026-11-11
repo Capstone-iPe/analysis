@@ -71,7 +71,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 | Template | Track B requirement | Where |
 |---|---|---|
 | I · Week 1 | Spec + gold set (60–100) before agent code | [eval/](eval/): 71 shops. G-001–G-050 to build against, G-051–G-071 once. **Correct** is the gold answer. |
-| II · Week 1 | Three prompting strategies + how the ≤8B breaks | Strategies fixed in [docs/prompting-baseline.md](docs/prompting-baseline.md). Runs and break notes still open. |
+| II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [docs/prompting-baseline.md](docs/prompting-baseline.md) + [results](docs/prompting-baseline-results.json). |
 | III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [corpus/](corpus/): 500 docs, 1,446 chunks. Copilot hybrid search + rerank. Recall@k still to score. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
 | V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Taxonomy and a trace dashboard still open. |
@@ -85,8 +85,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates
 
 - [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](docs/ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
 - [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
-- [x] **II.** Three strategies chosen: structured few-shot, CoT / self-consistency, decomposition — [docs/prompting-baseline.md](docs/prompting-baseline.md).
-- [ ] **II.** Run those baselines on the hosted ≤8B and write the break notes (same doc).
+- [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes and what we kept: [docs/prompting-baseline.md](docs/prompting-baseline.md).
 - [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
 - [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy corpus started in [corpus/](corpus/); web prototype at [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/).
 
@@ -130,7 +129,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 ### Still open before CLI submission
 
 - [ ] **copilot-svc README** — how to run the CLI, build the index, set `CHAT_API_KEY`, and run replay / holdout
-- [ ] **Week 1-II prompting runs** — execute the three strategies in [docs/prompting-baseline.md](docs/prompting-baseline.md) and fill the break notes
+- [x] **Week 1-II prompting runs** — [docs/prompting-baseline.md](docs/prompting-baseline.md) (still copy into the Capstone report later)
 - [ ] **Week 2 recall@k** — scored retrieval set; report recall@4 and recall@8
 - [ ] **Week 3–4 failure taxonomy + traces** — retrieval miss, wrong next step, bad tool call, made-up policy
 - [ ] Label the demo as **CLI-only** so Week 4 UI / container / rate limit / cache are not claimed as done

@@ -97,8 +97,8 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates
 - [x] Corpus size in range: [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) has 500 documents (cap 2,000).
 - [x] Chunking, hybrid retrieval (keyword + dense), and a reranker exist in `onb-corpus`; copilot calls the search API.
 - [x] Citation-grounded why / explain path (RAG cites; ONB decides).
-- [ ] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps).
-- [ ] **recall@k** measured separately from end-to-end answer quality (e.g. recall@4 and recall@8).
+- [x] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps): [onb-corpus docs/week2-retrieval.md](https://github.com/Capstone-iPe/onb-corpus/blob/main/docs/week2-retrieval.md).
+- [x] **recall@k** measured separately from end-to-end answer quality: hit@4 = 0.958, hit@8 = 1.0 (hybrid 800/120); [eval/results](https://github.com/Capstone-iPe/onb-corpus/tree/main/eval/results).
 
 ### Week 3 — agentic layer
 
@@ -133,7 +133,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 
 - [ ] **copilot-svc README** — how to run the CLI, build the index, set `CHAT_API_KEY`, and run replay / holdout
 - [x] **Week 1-II prompting runs** — [docs/prompting-baseline.md](docs/prompting-baseline.md) (still copy into the Capstone report later)
-- [ ] **Week 2 recall@k** — scored retrieval set; report recall@4 and recall@8
+- [x] **Week 2 recall@k** — scored in onb-corpus; hit@4 / hit@8 on fixed questions
 - [ ] **Week 3–4 failure taxonomy + traces** — retrieval miss, wrong next step, bad tool call, made-up policy
 - [ ] Label the demo as **CLI-only** so Week 4 UI / container / rate limit / cache are not claimed as done
 

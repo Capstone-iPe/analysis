@@ -58,26 +58,27 @@
     <section class="week" id="week-2">
       <div class="week-head">
         <h2>Week 2 — RAG</h2>
-        <span class="pill progress">In progress</span>
+        <span class="pill done">Done</span>
       </div>
       <p class="tldr">
-        <strong>TL;DR:</strong> 500-doc pack and Bearer-auth search API in
+        <strong>TL;DR:</strong> 500-doc pack and Bearer search API in
         <a href="https://github.com/Capstone-iPe/onb-corpus">Capstone-iPe/onb-corpus</a>
-        (hybrid BM25 + dense + reranker). Copilot calls <code>/v1/search</code> for why/cite.
-        Still open: documented retrieval experiments and <strong>recall@k</strong> scored apart from shop replay.
+        (hybrid dense + keyword). Local experiments kept <strong>800/120 + hybrid</strong>
+        (hit@4 = 0.958, hit@8 = 1.0); CrossEncoder rerank did not help hit@4 and stays off Render.
+        Copilot calls <code>/v1/search</code> for why/cite.
       </p>
       <ul class="checks">
         <li class="ok">Corpus size in range (500 docs; cap 2,000) in <code>onb-corpus</code></li>
-        <li class="ok">Chunking + hybrid + reranker in onb-corpus; copilot uses the search API</li>
+        <li class="ok">Chunking + hybrid in onb-corpus; copilot uses the search API</li>
         <li class="ok">RAG cites; ONB decides the verdict</li>
-        <li class="todo">Chunking / hybrid / rerank experiment write-up</li>
-        <li class="todo">recall@4 and recall@8 on a fixed question set</li>
+        <li class="ok">Chunking / hybrid / rerank experiment write-up</li>
+        <li class="ok">hit@4 / hit@8 on a fixed question set (local)</li>
       </ul>
       <ul class="dives">
         <li><a href="https://github.com/Capstone-iPe/onb-corpus">Deep dive · onb-corpus</a></li>
-        <li><a href="https://github.com/Capstone-iPe/onb-corpus/tree/main/documents">Deep dive · documents/</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/docs/week2-retrieval.md">Deep dive · Week 2 retrieval write-up</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-corpus/tree/main/eval">Deep dive · recall question set + results</a></li>
         <li><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/README.md">Deep dive · search API commands</a></li>
-        <li><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/README.md">Deep dive · copilot run commands</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#week-2--rag">Deep dive · Week 2 checklist</a></li>
         <li><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/src/onb_corpus/index.py">Deep dive · search code</a></li>
       </ul>

@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is [corpus/](corpus/). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf).
+The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is the [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) submodule at [corpus/](corpus/) (also used by `copilot-svc`). Generators live in [corpus-build/](corpus-build/). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf).
 
 The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). The interactive chat prototype (no backend) is at [prototype/](https://capstone-ipe.github.io/analysis/prototype/). Locally, open [docs/index.html](docs/index.html).
 

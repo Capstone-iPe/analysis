@@ -2,9 +2,9 @@
 
 No ONB tools. No RAG. No copilot agent loop. Cases and results live next to this file.
 
-  cp docs/.env.example docs/.env   # or repo-root .env
-  # fill CHAT_API_KEY; place vm06-ca.crt next to this script if missing
-  python3 docs/prompting_baseline.py
+  cp week1/prompting-baseline/.env.example week1/prompting-baseline/.env
+  # fill CHAT_API_KEY; place vm06-ca.crt next to this script (gitignored)
+  python3 week1/prompting-baseline/prompting_baseline.py
 """
 
 from __future__ import annotations
@@ -18,10 +18,10 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-DOCS = Path(__file__).resolve().parent
-ROOT = DOCS.parent
-CASES = DOCS / "prompting-baseline-cases.json"
-OUT = DOCS / "prompting-baseline-results.json"
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+CASES = HERE / "prompting-baseline-cases.json"
+OUT = HERE / "prompting-baseline-results.json"
 
 
 def _load_dotenv(path: Path) -> None:
@@ -39,7 +39,7 @@ def _load_dotenv(path: Path) -> None:
 
 
 _load_dotenv(ROOT / ".env")
-_load_dotenv(DOCS / ".env")
+_load_dotenv(HERE / ".env")
 
 
 def chat_api_key() -> str:
@@ -59,10 +59,10 @@ def chat_ca_cert() -> Path:
     if raw:
         path = Path(raw).expanduser()
         return path if path.is_absolute() else ROOT / path
-    for candidate in (DOCS / "vm06-ca.crt", ROOT / "vm06-ca.crt"):
+    for candidate in (HERE / "vm06-ca.crt", ROOT / "vm06-ca.crt"):
         if candidate.is_file():
             return candidate
-    return DOCS / "vm06-ca.crt"
+    return HERE / "vm06-ca.crt"
 
 
 POLICY = (
@@ -146,7 +146,9 @@ SCHEMA = {
 def main() -> None:
     key = chat_api_key()
     if not key:
-        raise SystemExit("Set CHAT_API_KEY in docs/.env (or the environment) and re-run.")
+        raise SystemExit(
+            "Set CHAT_API_KEY in week1/prompting-baseline/.env (or the environment) and re-run."
+        )
     if not chat_ca_cert().is_file():
         raise SystemExit(f"Missing CA file: {chat_ca_cert()}")
     cases = json.loads(CASES.read_text(encoding="utf-8"))

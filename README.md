@@ -74,7 +74,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 | Template | Track B requirement | Where |
 |---|---|---|
 | I · Week 1 | Spec + gold set (60–100) before agent code | [eval/](eval/): 71 shops. G-001–G-050 to build against, G-051–G-071 once. **Correct** is the gold answer. |
-| II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [docs/prompting-baseline.md](docs/prompting-baseline.md) + [results](docs/prompting-baseline-results.json). |
+| II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [docs/prompting-baseline.md](docs/prompting-baseline.md) + [week1/prompting-baseline/](week1/prompting-baseline/). |
 | III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall@k still to score. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
 | V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Taxonomy and a trace dashboard still open. |
@@ -88,7 +88,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates
 
 - [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](docs/ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
 - [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
-- [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes and what we kept: [docs/prompting-baseline.md](docs/prompting-baseline.md). Runner: [docs/prompting_baseline.py](docs/prompting_baseline.py) (not copilot agent code).
+- [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes: [docs/prompting-baseline.md](docs/prompting-baseline.md). Runner + cases + results: [week1/prompting-baseline/](week1/prompting-baseline/) (not copilot agent code).
 - [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
 - [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy search in [onb-corpus](https://github.com/Capstone-iPe/onb-corpus); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
 

@@ -12,14 +12,16 @@
       <h1 class="brand">iPe<span>Merchant onboarding copilot · Track B mentor view</span></h1>
       <p class="lede">
         Progress by Capstone week, with a short TL;DR and links into the evidence.
-        Product code lives in <code>copilot-svc</code>, <code>onb-svc</code>, and <code>copilot-web-app</code>; this repo holds the ADR, corpus, eval set, and write-ups.
+        Product code lives in <code>copilot-svc</code>, <code>onb-svc</code>, and <code>copilot-web-app</code>;
+        the policy pack is <a href="https://github.com/Capstone-iPe/corpus">Capstone-iPe/corpus</a>
+        (submodule of <code>copilot-svc</code>). This repo holds the ADR, eval set, and write-ups.
       </p>
       <ul class="quick">
         <li><a href="prototype/">Chat prototype</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/ADR-0001-architecture.md">ADR-0001</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md">Repo README</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/tree/main/eval">Gold set (71 shops)</a></li>
-        <li><a href="https://github.com/Capstone-iPe/analysis/tree/main/corpus">Policy corpus</a></li>
+        <li><a href="https://github.com/Capstone-iPe/corpus">Policy corpus</a></li>
         <li><a href="https://github.com/Capstone-iPe/copilot-svc">copilot-svc</a></li>
         <li><a href="https://github.com/Capstone-iPe/onb-svc">onb-svc</a></li>
         <li><a href="https://github.com/Capstone-iPe/copilot-web-app">copilot-web-app</a></li>
@@ -58,11 +60,13 @@
         <span class="pill progress">In progress</span>
       </div>
       <p class="tldr">
-        <strong>TL;DR:</strong> 500-doc corpus with hybrid search (BM25 + dense) and a reranker in the copilot.
+        <strong>TL;DR:</strong> 500-doc pack in
+        <a href="https://github.com/Capstone-iPe/corpus">Capstone-iPe/corpus</a>
+        with hybrid search (BM25 + dense) and a reranker in the copilot.
         Citation-grounded why-path is live. Still open: documented retrieval experiments and <strong>recall@k</strong> scored apart from shop replay.
       </p>
       <ul class="checks">
-        <li class="ok">Corpus size in range (500 docs; cap 2,000)</li>
+        <li class="ok">Corpus size in range (500 docs; cap 2,000) in <code>Capstone-iPe/corpus</code></li>
         <li class="ok">Chunking + hybrid + reranker implemented</li>
         <li class="ok">RAG cites; ONB decides the verdict</li>
         <li class="todo">Chunking / hybrid / rerank experiment write-up</li>
@@ -70,6 +74,8 @@
       </ul>
       <ul class="dives">
         <li><a href="https://github.com/Capstone-iPe/corpus">Deep dive · corpus</a></li>
+        <li><a href="https://github.com/Capstone-iPe/corpus/tree/main/documents">Deep dive · documents/</a></li>
+        <li><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/README.md">Deep dive · copilot run / index commands</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#week-2--rag">Deep dive · Week 2 checklist</a></li>
         <li><a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/src/copilot/corpus/index_corpus.py">Deep dive · search code</a></li>
       </ul>

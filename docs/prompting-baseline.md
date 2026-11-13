@@ -13,7 +13,8 @@ Each run is **one** chat completion. No tools. No multi-turn agent.
 **Model:** `Qwen/Qwen3-8B`
 
 ```bash
-cp docs/.env.example docs/.env   # set CHAT_API_KEY; vm06-ca.crt sits in docs/
+cp docs/.env.example docs/.env   # set CHAT_API_KEY
+# place vm06-ca.crt in docs/ (gitignored; not in the repo)
 python3 docs/prompting_baseline.py
 ```
 

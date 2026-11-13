@@ -10,7 +10,7 @@
 
 A merchant applies for one shop in a web chat. The copilot asks for one field at a time, takes document uploads, and only after an explicit submit returns a verdict: the shop stays in review, or go-live may be recommended to a named human role. Every rule it states cites a policy. It never activates a merchant, changes a ceiling, waives a document, or follows an instruction written in the chat or the application.
 
-We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus lives in [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) (submodule of `copilot-svc`). The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
+We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus). The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
 The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** The 71 practice shops in [eval/](../eval/) are the check: a reply passes when the **Correct** list for that shop is true. The copilot must not activate a shop.
 
@@ -20,10 +20,11 @@ The hard constraint shaping every decision below: **a fluent but wrong answer fr
 
 | Service | Nature | Responsibility |
 |---|---|---|
-| Copilot | All the AI | Prompts the 8B, runs the planner/executor/critic loop, owns the RAG pipeline, is the MCP client, phrases every reply. |
+| Copilot | All the AI | Prompts the 8B, runs the planner/executor/critic loop, **calls** corpus search for passages, is the MCP client, phrases every reply. |
 | ONB service | Deterministic Python, no model | Owns application state and files, says what field is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. |
+| onb-corpus | Deterministic search API | Owns the policy documents, builds the index, embeds queries via the hosted embeddings API, returns ranked passages. Bearer-auth `/v1/search`. |
 
-Plus two hosted endpoints, still unassigned: the ≤8B chat (used by the copilot) and embeddings (used by the copilot's RAG). The web frontend is a thin chat client that talks only to the copilot.
+Plus two hosted endpoints, still unassigned: the ≤8B chat (used by the copilot) and embeddings (used by **onb-corpus**). The web frontend is a thin chat client that talks only to the copilot.
 
 ### D2 — ONB is the single source of truth; the copilot is stateless
 
@@ -39,13 +40,13 @@ The chat follows the prototype: one thread, three phases. The copilot phrases. O
 
 **Verdict.** `submit` runs the rules and, unless the type is refused, allocates the review id once. A file saved after that re-runs the same rules. The review id does not change. The outcome may, for example from in review to recommend go-live, once the missing file is accepted. No model is involved. The copilot renders the structured result and does not alter a field.
 
-### D4 — RAG lives in the copilot and only grounds wording, never the outcome
+### D4 — The copilot calls retrieval; RAG only grounds wording, never the outcome
 
-Retrieval (embeddings + hybrid search + rerank) and generation both sit in the copilot. RAG supplies the policy passage behind a "why?" answer and the citation text on the verdict. If retrieval returned the wrong passage, the citation would be wrong but the decision would still be correct, because code computed it. ONB therefore makes zero model calls.
+Generation sits in the copilot. Retrieval (chunking, embeddings, hybrid search, rerank) sits in [onb-corpus](https://github.com/Capstone-iPe/onb-corpus). The copilot calls `POST /v1/search` with a shared Bearer `CORPUS_API_KEY`, then phrases from the returned passages. If retrieval returned the wrong passage, the citation would be wrong but the decision would still be correct, because code computed it. ONB therefore makes zero model calls.
 
-### D5 — The corpus is its own pack; the practice shops stay out of the index
+### D5 — The corpus is its own service; the practice shops stay out of the index
 
-The retrieval corpus is [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. Generators live in that repo’s `corpus-build/`. The pack is a submodule of `copilot-svc`; this analysis repo does not vendor it. The copilot retrieves these after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
+The retrieval pack is [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. Generators live in that repo’s `corpus-build/`. `copilot-svc` does not vendor the pack (no git submodule). The copilot retrieves passages after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
 
 ### D6 — One MCP surface
 
@@ -64,15 +65,17 @@ For the four-week build the verifier is **mocked**: real format check, then acce
 ```mermaid
 flowchart LR
   FE[Web chat]
-  A[Copilot<br/>8B + RAG + MCP client]
+  A[Copilot<br/>8B + MCP client]
   ONB[ONB service<br/>pure Python<br/>rules, state, files]
+  C[onb-corpus<br/>search API]
   DV[Document verifier<br/>mocked fixtures]
   M[(≤8B chat)]
   E[(Embeddings)]
 
   FE -->|start, messages, submit| A
   A -->|generate| M
-  A -->|search policy corpus| E
+  A -->|"POST /v1/search Bearer"| C
+  C -->|embed query| E
   A <-->|MCP tools| ONB
   ONB -->|verify file| DV
 ```
@@ -104,7 +107,7 @@ sequenceDiagram
   participant FE as Web chat
   participant A as Copilot
   participant ONB as ONB service
-  participant E as Embeddings
+  participant C as onb-corpus
   participant M as ≤8B chat
 
   FE->>A: start
@@ -114,8 +117,8 @@ sequenceDiagram
   A-->>FE: "What is the shop's legal name?"
 
   FE->>A: "why do you need that?"
-  A->>E: embed the question
-  A->>A: hybrid search + rerank over policy corpus
+  A->>C: POST /v1/search Bearer
+  C-->>A: passages including ONB-POL-001
   A->>M: answer from ONB-POL-001 §2 passage
   A-->>FE: reason + cite, then re-ask shop_name
   Note over A,ONB: a why question does not save the field and does not submit
@@ -240,7 +243,7 @@ The copilot phrases this into the verdict card. It does not alter any field.
 | Track B requirement | Where it lives |
 |---|---|
 | Week 1 gold set + baseline | The 71 shops are in [eval/](../eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
-| RAG: 500–2,000 docs, hybrid, rerank, recall@k | The copilot's RAG over [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) (500 documents, 1,446 chunks). Recall@k is scored separately from the verdict. |
+| RAG: 500–2,000 docs, hybrid, rerank, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) search API (500 documents, 1,446 chunks); the copilot calls it for passages. Recall@k is scored separately from the verdict. |
 | Agentic layer: planner/executor/critic, ≥3 tools, memory, ≤10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row. |
 | JSON retry, token budget, error handling | Executor and critic in the copilot. |
 | Observability + failure taxonomy | Traces per step: retrieval miss, wrong next step, bad tool call, hallucinated policy. |
@@ -259,9 +262,9 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 | S6 | Prompt security, evaluation, budgeting | Input guard (merchant text as data); per-turn token budget |
 | S7 | CoT, self-consistency, ReAct | Planner/executor reasoning loop |
 | S8 | Prompt optimization and security | Hardening against the injection archetypes |
-| S9 | RAG motivation, sparse retrieval | BM25 half of hybrid search |
-| S10 | Dense retrieval, semantic search | Embeddings half of hybrid search |
-| S11 | Production RAG: query routing, retrieval gateways | Route only why/verdict turns to retrieval; reranker |
+| S9 | RAG motivation, sparse retrieval | BM25 half of hybrid search in onb-corpus |
+| S10 | Dense retrieval, semantic search | Embeddings half of hybrid search in onb-corpus |
+| S11 | Production RAG: query routing, retrieval gateways | Copilot routes why/verdict turns to onb-corpus `/v1/search`; reranker in onb-corpus |
 | S12 | Planners vs executors, context and memory | Planner/executor/critic; memory held as the ONB application row |
 | S22 | RAG to assistants and agents | Turning retrieval into the copilot |
 | S23 | Tool use and function calling | ONB tool calls: next_step, save_answer, save_file, submit, get_review |
@@ -279,11 +282,11 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 - Policy outcomes are deterministic and unit-testable with no model, which is where accuracy and safety are scored.
 - A weak 8B can only affect wording, not decisions.
 - Clear ownership for six people: FE, copilot, RAG, ONB rules, eval/observability, safety.
-- The corpus pack already exists ([Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus)), including rejected drafts and pages that try to override the rules.
+- The corpus pack and search API already exist ([Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus)), including rejected drafts and pages that try to override the rules.
 
 **Negative / costs**
 
-- Two services and an MCP layer are more plumbing than a single script.
+- Three services (copilot, ONB, onb-corpus) and an MCP layer are more plumbing than a single script.
 - Keeping citations correct is a separate problem from keeping decisions correct, so retrieval needs its own evaluation. The practice shops in `eval/` stay out of the index.
 
 **Risks and mitigations**

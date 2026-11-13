@@ -48,9 +48,9 @@ Do not echo account or id digits.
 
 ## Corpus and eval
 
-The retrieval pack is [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) (submodule of `copilot-svc`). Memo generators live in that repo's `corpus-build/`. This analysis repo does not vendor the corpus. `eval/` holds the 71 practice shops. Do not index `eval/`. Do not copy a practice shop into the corpus. A rejected draft in the corpus must be discarded when it is retrieved. Do not treat it as in force.
+The retrieval pack and search API are [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus). The copilot calls `POST /v1/search` with Bearer `CORPUS_API_KEY`; it does not vendor the documents. Memo generators live in that repo's `corpus-build/`. This analysis repo does not vendor the corpus. `eval/` holds the 71 practice shops. Do not index `eval/`. Do not copy a practice shop into the corpus. A rejected draft in the corpus must be discarded when it is retrieved. Do not treat it as in force.
 
-Read the policy file before stating a clause. The in-force ceiling, pack, and type lists are in the corpus repo under `documents/policy/` and `documents/annex/`. Do not invent an extra pack item or move the ceiling.
+Read the policy file before stating a clause. The in-force ceiling, pack, and type lists are in onb-corpus under `documents/policy/` and `documents/annex/`. Do not invent an extra pack item or move the ceiling.
 
 ## Leave out of this repo
 

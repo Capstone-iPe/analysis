@@ -45,7 +45,7 @@ Retrieval (embeddings + hybrid search + rerank) and generation both sit in the c
 
 ### D5 — The corpus is in the repo; the practice shops stay out of the index
 
-The retrieval corpus is [corpus/](../corpus/): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. The copilot retrieves these after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
+The retrieval corpus is [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. The pack is a submodule of `copilot-svc`; this analysis repo does not vendor it. The copilot retrieves these after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
 
 ### D6 — One MCP surface
 
@@ -240,7 +240,7 @@ The copilot phrases this into the verdict card. It does not alter any field.
 | Track B requirement | Where it lives |
 |---|---|
 | Week 1 gold set + baseline | The 71 shops are in [eval/](../eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
-| RAG: 500–2,000 docs, hybrid, rerank, recall@k | The copilot's RAG over [corpus/](../corpus/) (500 documents, 1,446 chunks). Recall@k is scored separately from the verdict. |
+| RAG: 500–2,000 docs, hybrid, rerank, recall@k | The copilot's RAG over [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) (500 documents, 1,446 chunks). Recall@k is scored separately from the verdict. |
 | Agentic layer: planner/executor/critic, ≥3 tools, memory, ≤10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row. |
 | JSON retry, token budget, error handling | Executor and critic in the copilot. |
 | Observability + failure taxonomy | Traces per step: retrieval miss, wrong next step, bad tool call, hallucinated policy. |

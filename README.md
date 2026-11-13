@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus is the [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) submodule at [corpus/](corpus/) (also used by `copilot-svc`). Generators live in [corpus-build/](corpus-build/). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf).
+The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval corpus lives in [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) (submodule of `copilot-svc`; generators in that repo's `corpus-build/`). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf).
 
 The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). The interactive chat prototype (no backend) is at [prototype/](https://capstone-ipe.github.io/analysis/prototype/). Locally, open [docs/index.html](docs/index.html).
 
@@ -72,7 +72,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 |---|---|---|
 | I · Week 1 | Spec + gold set (60–100) before agent code | [eval/](eval/): 71 shops. G-001–G-050 to build against, G-051–G-071 once. **Correct** is the gold answer. |
 | II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [docs/prompting-baseline.md](docs/prompting-baseline.md) + [results](docs/prompting-baseline-results.json). |
-| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [corpus/](corpus/): 500 docs, 1,446 chunks. Copilot hybrid search + rerank. Recall@k still to score. `eval/` stays out of the index. |
+| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus): 500 docs, 1,446 chunks. Copilot hybrid search + rerank. Recall@k still to score. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
 | V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Taxonomy and a trace dashboard still open. |
 | VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat + copilot deploy. Injection, PII, no activate tool, human for go-live. |
@@ -87,11 +87,11 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates
 - [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
 - [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes and what we kept: [docs/prompting-baseline.md](docs/prompting-baseline.md).
 - [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
-- [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy corpus started in [corpus/](corpus/); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
+- [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy corpus in [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
 
 ### Week 2 — RAG
 
-- [x] Corpus size in range: [corpus/](corpus/) has 500 documents (cap 2,000).
+- [x] Corpus size in range: [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) has 500 documents (cap 2,000).
 - [x] Chunking, hybrid retrieval (keyword + dense), and a reranker exist in `copilot-svc`.
 - [x] Citation-grounded why / explain path (RAG cites; ONB decides).
 - [ ] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps).

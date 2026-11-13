@@ -88,7 +88,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates
 
 - [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](docs/ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
 - [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
-- [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes and what we kept: [docs/prompting-baseline.md](docs/prompting-baseline.md).
+- [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes and what we kept: [docs/prompting-baseline.md](docs/prompting-baseline.md). Runner: [docs/prompting_baseline.py](docs/prompting_baseline.py) (not copilot agent code).
 - [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
 - [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy search in [onb-corpus](https://github.com/Capstone-iPe/onb-corpus); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
 

@@ -8,9 +8,14 @@ Each run is **one** chat completion. No tools. No multi-turn agent.
 
 **Input:** `stage`, `asked`, `said`, optional `context`, plus a fixed policy excerpt (same for every strategy).  
 **Cases:** [prompting-baseline-cases.json](prompting-baseline-cases.json) (B-01…B-10; build-set hard turns, not holdout).  
-**Runner:** `copilot-svc/replay/prompting_baseline.py`  
+**Runner:** [prompting_baseline.py](prompting_baseline.py) (this repo — Week 1-II, not the copilot agent loop).  
 **Raw results:** [prompting-baseline-results.json](prompting-baseline-results.json)  
 **Model:** `Qwen/Qwen3-8B`
+
+```bash
+cp docs/.env.example docs/.env   # set CHAT_API_KEY; vm06-ca.crt sits in docs/
+python3 docs/prompting_baseline.py
+```
 
 ## The three strategies
 

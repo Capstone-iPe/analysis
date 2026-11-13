@@ -12,7 +12,7 @@ A merchant applies for one shop in a web chat. The copilot asks for one field at
 
 We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus). The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
-The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** The 71 practice shops in [eval/](../eval/) are the check: a reply passes when the **Correct** list for that shop is true. The copilot must not activate a shop.
+The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** The 71 practice shops in [eval/](eval/) are the check: a reply passes when the **Correct** list for that shop is true. The copilot must not activate a shop.
 
 ## 2. Decisions
 
@@ -46,7 +46,7 @@ Generation sits in the copilot. Retrieval (chunking, embeddings, hybrid search, 
 
 ### D5 — The corpus is its own service; the practice shops stay out of the index
 
-The retrieval pack is [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. Generators live in that repo’s `corpus-build/`. `copilot-svc` does not vendor the pack (no git submodule). The copilot retrieves passages after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
+The retrieval pack is [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. Generators live in that repo’s `corpus-build/`. `copilot-svc` does not vendor the pack (no git submodule). The copilot retrieves passages after ONB has acted, to cite and explain. The 71 practice shops in [eval/](eval/) stay out of the index.
 
 ### D6 — One MCP surface
 
@@ -242,7 +242,7 @@ The copilot phrases this into the verdict card. It does not alter any field.
 
 | Track B requirement | Where it lives |
 |---|---|
-| Week 1 gold set + baseline | The 71 shops are in [eval/](../eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
+| Week 1 gold set + baseline | The 71 shops are in [eval/](eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
 | RAG: 500–2,000 docs, hybrid, rerank, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) search API (500 documents, 1,446 chunks); the copilot calls it for passages. Recall@k is scored separately from the verdict. |
 | Agentic layer: planner/executor/critic, ≥3 tools, memory, ≤10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row. |
 | JSON retry, token budget, error handling | Executor and critic in the copilot. |

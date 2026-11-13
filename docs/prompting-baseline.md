@@ -1,6 +1,6 @@
 # Week 1-II — prompting baseline (Track B)
 
-Capstone Track B requires a **single-agent, single-prompt** comparison of at least three strategies on the hosted ≤8B, plus notes on how the small model breaks. This is a baseline **before** relying on the copilot’s tool loop. It does not change [ADR-0001](ADR-0001-architecture.md): ONB still owns field order and the verdict in the product.
+Capstone Track B requires a **single-agent, single-prompt** comparison of at least three strategies on the hosted ≤8B, plus notes on how the small model breaks. This is a baseline **before** relying on the copilot’s tool loop. It does not change [ADR-0001](../ADR-0001-architecture.md): ONB still owns field order and the verdict in the product.
 
 ## Task (same for all three)
 

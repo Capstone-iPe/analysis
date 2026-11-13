@@ -6,10 +6,10 @@ This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assig
 
 Capstone templates:
 
-- [Track A / Track B selection](docs/Capstone-Templates-GenAI-Agentic-AI.pdf)
-- [Course schedule](docs/EPGC-GenAI-Agentic-AI-schedule.pdf)
+- [Track A / Track B selection](references/Capstone-Templates-GenAI-Agentic-AI.pdf)
+- [Course schedule](references/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [docs/ADR-0001-architecture.md](docs/ADR-0001-architecture.md). The retrieval pack and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus) (`copilot-svc` calls it with Bearer auth). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf).
+The HLD is [ADR-0001-architecture.md](ADR-0001-architecture.md). The retrieval pack and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus) (`copilot-svc` calls it with Bearer auth). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Templates-GenAI-Agentic-AI.pdf).
 
 The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). The interactive chat prototype (no backend) is at [prototype/](https://capstone-ipe.github.io/analysis/prototype/). Locally, open [docs/index.html](docs/index.html).
 
@@ -82,15 +82,15 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 
 ## Capstone weeks (Track B)
 
-Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](docs/Capstone-Templates-GenAI-Agentic-AI.pdf). Product code is in `copilot-svc`, `onb-svc`, and `copilot-web-app`.
+Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Templates-GenAI-Agentic-AI.pdf). Product code is in `copilot-svc`, `onb-svc`, and `copilot-web-app`.
 
 ### Week 1 — task decomposition + prompting baseline
 
-- [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](docs/ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
+- [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
 - [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
 - [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Break notes: [docs/prompting-baseline.md](docs/prompting-baseline.md). Runner + cases + results: [prompting-baseline/](prompting-baseline/) (not copilot agent code).
 - [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
-- [x] Extra: HLD in [ADR-0001](docs/ADR-0001-architecture.md); policy search in [onb-corpus](https://github.com/Capstone-iPe/onb-corpus); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
+- [x] Extra: HLD in [ADR-0001](ADR-0001-architecture.md); policy search in [onb-corpus](https://github.com/Capstone-iPe/onb-corpus); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
 
 ### Week 2 — RAG
 

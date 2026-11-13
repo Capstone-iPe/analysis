@@ -48,7 +48,7 @@ Do not echo account or id digits.
 
 ## Corpus and eval
 
-`corpus/` is what the copilot retrieves. `eval/` holds the 71 practice shops. Do not index `eval/`. Do not copy a practice shop into the corpus. A rejected draft in the corpus must be discarded when it is retrieved. Do not treat it as in force.
+`corpus/` is a git submodule ([Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus)) — what the copilot retrieves. Memo generators live in `corpus-build/`. `eval/` holds the 71 practice shops. Do not index `eval/`. Do not copy a practice shop into the corpus. A rejected draft in the corpus must be discarded when it is retrieved. Do not treat it as in force.
 
 Read the policy file before stating a clause. The in-force ceiling, pack, and type lists are in `corpus/documents/policy/` and `corpus/documents/annex/`. Do not invent an extra pack item or move the ceiling.
 

@@ -97,7 +97,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Corpus size in range: [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) has 500 documents (cap 2,000).
 - [x] Chunking, hybrid retrieval (keyword + dense), and a reranker exist in `onb-corpus`; copilot calls the search API.
 - [x] Citation-grounded why / explain path (RAG cites; ONB decides).
-- [x] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps): [onb-corpus eval/week2-retrieval.md](https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/week2-retrieval.md).
+- [x] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps): [onb-corpus eval/retrieval.md](https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md).
 - [x] **recall@k** measured separately from end-to-end answer quality: hit@4 = 0.958, hit@8 = 1.0 (hybrid 800/120); [eval/results](https://github.com/Capstone-iPe/onb-corpus/tree/main/eval/results).
 
 ### Week 3 — agentic layer

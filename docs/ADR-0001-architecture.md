@@ -10,7 +10,7 @@
 
 A merchant applies for one shop in a web chat. The copilot asks for one field at a time, takes document uploads, and only after an explicit submit returns a verdict: the shop stays in review, or go-live may be recommended to a named human role. Every rule it states cites a policy. It never activates a merchant, changes a ceiling, waives a document, or follows an instruction written in the chat or the application.
 
-We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus is in the repo. The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
+We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus lives in [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus) (submodule of `copilot-svc`). The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
 The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** The 71 practice shops in [eval/](../eval/) are the check: a reply passes when the **Correct** list for that shop is true. The copilot must not activate a shop.
 
@@ -43,9 +43,9 @@ The chat follows the prototype: one thread, three phases. The copilot phrases. O
 
 Retrieval (embeddings + hybrid search + rerank) and generation both sit in the copilot. RAG supplies the policy passage behind a "why?" answer and the citation text on the verdict. If retrieval returned the wrong passage, the citation would be wrong but the decision would still be correct, because code computed it. ONB therefore makes zero model calls.
 
-### D5 — The corpus is in the repo; the practice shops stay out of the index
+### D5 — The corpus is its own pack; the practice shops stay out of the index
 
-The retrieval corpus is [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. The pack is a submodule of `copilot-svc`; this analysis repo does not vendor it. The copilot retrieves these after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
+The retrieval corpus is [Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus): 500 documents, 1,446 chunks at 800/120. It holds the in-force policies, annexes, circulars, briefings, opinions, FAQ, territorial notes, a reviewer handbook, and rejected drafts. Generators live in that repo’s `corpus-build/`. The pack is a submodule of `copilot-svc`; this analysis repo does not vendor it. The copilot retrieves these after ONB has acted, to cite and explain. The 71 practice shops in [eval/](../eval/) stay out of the index.
 
 ### D6 — One MCP surface
 
@@ -279,7 +279,7 @@ Track B emphasises Modules 2, 4, and 5, with a little of Module 1 for the API an
 - Policy outcomes are deterministic and unit-testable with no model, which is where accuracy and safety are scored.
 - A weak 8B can only affect wording, not decisions.
 - Clear ownership for six people: FE, copilot, RAG, ONB rules, eval/observability, safety.
-- The corpus is already in the repo, including rejected drafts and pages that try to override the rules.
+- The corpus pack already exists ([Capstone-iPe/corpus](https://github.com/Capstone-iPe/corpus)), including rejected drafts and pages that try to override the rules.
 
 **Negative / costs**
 

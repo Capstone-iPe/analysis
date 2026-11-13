@@ -7,10 +7,10 @@ Capstone Track B requires a **single-agent, single-prompt** comparison of at lea
 Each run is **one** chat completion. No tools. No multi-turn agent.
 
 **Input:** `stage`, `asked`, `said`, optional `context`, plus a fixed policy excerpt (same for every strategy).  
-**Cases / runner / results:** [`prompting-baseline/`](../prompting-baseline/) (B-01…B-10; build-set hard turns, not holdout).  
+**Cases:** [prompting-baseline-cases.json](prompting-baseline-cases.json) (B-01…B-10; build-set hard turns, not holdout).  
+**Runner:** [prompting_baseline.py](prompting_baseline.py)  
+**Raw results:** [prompting-baseline-results.json](prompting-baseline-results.json)  
 **Model:** `Qwen/Qwen3-8B`
-
-This write-up stays under `docs/` for the mentor Pages site. The runnable experiment (script, cases, results, `.env`) lives in repo-root `prompting-baseline/` — not in the Pages tree.
 
 ```bash
 cd prompting-baseline
@@ -18,6 +18,7 @@ cp .env.example .env   # set CHAT_API_KEY
 # place vm06-ca.crt here (gitignored)
 python3 prompting_baseline.py
 ```
+
 
 ## The three strategies
 

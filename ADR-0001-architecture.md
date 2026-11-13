@@ -242,7 +242,7 @@ The copilot phrases this into the verdict card. It does not alter any field.
 
 | Track B requirement | Where it lives |
 |---|---|
-| Week 1 gold set + baseline | The 71 shops are in [eval/](eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
+| Gold set + baseline | The 71 shops are in [eval/](eval/). G-001–G-050 while building, G-051–G-071 once. Three single-prompt baselines wait until the chat API is assigned. |
 | RAG: 500–2,000 docs, hybrid, rerank, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) search API (500 documents, 1,446 chunks); the copilot calls it for passages. Recall@k is scored separately from the verdict. |
 | Agentic layer: planner/executor/critic, ≥3 tools, memory, ≤10 steps | The copilot's loop over ONB's tools. Memory is the ONB application row. |
 | JSON retry, token budget, error handling | Executor and critic in the copilot. |

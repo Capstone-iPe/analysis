@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](references/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](references/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [ADR-0001-architecture.md](ADR-0001-architecture.md). The retrieval pack and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus) (`copilot-svc` calls it with Bearer auth). The Week 1 gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Templates-GenAI-Agentic-AI.pdf).
+The HLD is [ADR-0001-architecture.md](ADR-0001-architecture.md). The retrieval pack and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus) (`copilot-svc` calls it with Bearer auth). The gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Templates-GenAI-Agentic-AI.pdf).
 
 The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). The interactive chat prototype (no backend) is at [prototype/](https://capstone-ipe.github.io/analysis/prototype/). Locally, open [docs/index.html](docs/index.html).
 
@@ -105,7 +105,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Tool-using loop over at least three tools (five ONB MCP tools).
 - [x] Explicit decide → act → say/critic path; persistent application state in ONB; ≤10 steps.
 - [x] Error handling for bad labels, tool errors, and refusals (JSON schema on intent; retries on the classifier).
-- [ ] End-to-end accuracy write-up against the Week 1 set (replay numbers recorded in the report).
+- [ ] End-to-end accuracy write-up against the gold set (replay numbers recorded in the report).
 - [ ] Failure taxonomy: retrieval miss, reasoning / wrong next step, tool-call error, hallucination / made-up policy.
 - [ ] Tracing dashboard (LangSmith, Langfuse, or OpenTelemetry) — or export of the per-turn `trace` log.
 

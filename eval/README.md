@@ -1,4 +1,4 @@
-# Week 1 gold set
+# Gold set
 
 Format A. One full shop per file, from the first question through submit and the messages after the verdict.
 

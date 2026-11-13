@@ -10,7 +10,7 @@ description: >-
 
 # iPe merchant onboarding
 
-[ADR-0001](docs/ADR-0001-architecture.md) is accepted. Follow it. Do not open a second architecture, rename a service, or add a capability the ADR closed.
+[ADR-0001](ADR-0001-architecture.md) is accepted. Follow it. Do not open a second architecture, rename a service, or add a capability the ADR closed.
 
 ## Two services
 

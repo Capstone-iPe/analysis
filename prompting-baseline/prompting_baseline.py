@@ -2,9 +2,9 @@
 
 No ONB tools. No RAG. No copilot agent loop. Cases and results live next to this file.
 
-  cp week1/prompting-baseline/.env.example week1/prompting-baseline/.env
+  cp prompting-baseline/.env.example prompting-baseline/.env
   # fill CHAT_API_KEY; place vm06-ca.crt next to this script (gitignored)
-  python3 week1/prompting-baseline/prompting_baseline.py
+  python3 prompting-baseline/prompting_baseline.py
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ import urllib.request
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[1]
+ROOT = HERE.parent
 CASES = HERE / "prompting-baseline-cases.json"
 OUT = HERE / "prompting-baseline-results.json"
 
@@ -147,7 +147,7 @@ def main() -> None:
     key = chat_api_key()
     if not key:
         raise SystemExit(
-            "Set CHAT_API_KEY in week1/prompting-baseline/.env (or the environment) and re-run."
+            "Set CHAT_API_KEY in prompting-baseline/.env (or the environment) and re-run."
         )
     if not chat_ca_cert().is_file():
         raise SystemExit(f"Missing CA file: {chat_ca_cert()}")

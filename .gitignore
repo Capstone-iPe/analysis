@@ -1,5 +1,5 @@
 .DS_Store
 __pycache__/
 .env
-week1/prompting-baseline/.env
+prompting-baseline/.env
 *.crt

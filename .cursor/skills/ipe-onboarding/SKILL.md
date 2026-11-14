@@ -20,7 +20,7 @@ ONB is deterministic Python with no model. It owns the application, the files, t
 
 The web chat talks only to the copilot. The contract between the web chat and the copilot is not finalized. Do not write it down here as a standard. Exam-harness JSON is not the product API.
 
-The hosted chat API and the embeddings API are unselected. Do not name a vendor, and do not name IIT KGP as the provider.
+Hosted OpenAI-compatible APIs are selected: chat `Qwen/Qwen3-8B`, embeddings `bge-small-en-v1.5`. Do not name IIT KGP as the provider.
 
 ## MCP
 

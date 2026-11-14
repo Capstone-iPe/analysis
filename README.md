@@ -2,7 +2,7 @@
 
 A merchant applies for one shop in one web chat. The copilot asks for one thing at a time, takes the documents, then shows the application and waits. Submit is available only once every required document is uploaded or the merchant has said they do not have it. The verdict says whether the shop stays in review or can be recommended for go-live, names what is missing, cites the policy, and gives a review id. The chat stays open: a missing file can still be added, and the verdict updates without a new review id. A person at iPe activates the shop. The copilot does not.
 
-This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html), with the Android screens rebuilt as a web chat. The build is Track B: a hosted ≤8B chat model and an embeddings endpoint, no weight changes. The API is not selected yet.
+This is the product in [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html), with the Android screens rebuilt as a web chat. The build is Track B: hosted OpenAI-compatible APIs, no weight changes — chat **`Qwen/Qwen3-8B`**, embeddings **`bge-small-en-v1.5`**.
 
 Capstone templates:
 
@@ -17,7 +17,7 @@ The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registrat
 
 ## What we run
 
-Two services we build. Chat and embeddings stay slots until the hosted APIs are chosen. All of the AI lives in the copilot. ONB is plain, deterministic Python with no model calls.
+Two services we build. Chat and embeddings are the Capstone hosted OpenAI-compatible endpoints (models below). All of the AI lives in the copilot. ONB is plain, deterministic Python with no model calls.
 
 ```mermaid
 flowchart LR
@@ -44,8 +44,8 @@ flowchart LR
 | ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. No model calls. |
 | onb-corpus | Us | Policy documents + authenticated search API. Owns embeddings calls, hybrid search, and rerank. |
 | Document verifier | Us (mocked) | ONB calls it on `save_file`. Format check + fixture-based accept/reject. Not the LLM. Swap for real PDF/OCR later. |
-| ≤8B chat | Hosted API, not selected | The only language model. Used by the copilot. |
-| Embeddings | Hosted API, not selected | Turns text into numbers for policy search. Used by onb-corpus. |
+| ≤8B chat | Hosted API · `Qwen/Qwen3-8B` | The only language model. Used by the copilot (and the prompting baseline). |
+| Embeddings | Hosted API · `bge-small-en-v1.5` | Turns text into numbers for policy search. Used by onb-corpus. |
 
 ## Tools ONB exposes over MCP
 

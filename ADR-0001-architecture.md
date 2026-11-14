@@ -10,7 +10,7 @@
 
 A merchant applies for one shop in a web chat. The copilot asks for one field at a time, takes document uploads, and only after an explicit submit returns a verdict: the shop stays in review, or go-live may be recommended to a named human role. Every rule it states cites a policy. It never activates a merchant, changes a ceiling, waives a document, or follows an instruction written in the chat or the application.
 
-We are on Track B: a hosted ≤8B instruct endpoint plus an embeddings endpoint, no weight changes, no frontier model. Those APIs are not selected yet. This document is the HLD. The policy corpus and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus). The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
+We are on Track B: hosted OpenAI-compatible APIs, no weight changes, no frontier model. Chat is **`Qwen/Qwen3-8B`**; embeddings are **`bge-small-en-v1.5`**. This document is the HLD. The policy corpus and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus). The LLD is the next artefact. The engineering value has to come from orchestration, retrieval, tool design, and evaluation.
 
 The hard constraint shaping every decision below: **a fluent but wrong answer from a small model must never be able to change a policy outcome.** The 71 practice shops in [eval/](eval/) are the check: a reply passes when the **Correct** list for that shop is true. The copilot must not activate a shop.
 
@@ -24,7 +24,7 @@ The hard constraint shaping every decision below: **a fluent but wrong answer fr
 | ONB service | Deterministic Python, no model | Owns application state and files, says what field is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. |
 | onb-corpus | Deterministic search API | Owns the policy documents, builds the index, embeds queries via the hosted embeddings API, returns ranked passages. Bearer-auth `/v1/search`. |
 
-Plus two hosted endpoints, still unassigned: the ≤8B chat (used by the copilot) and embeddings (used by **onb-corpus**). The web frontend is a thin chat client that talks only to the copilot.
+Plus two Capstone hosted endpoints: ≤8B chat `Qwen/Qwen3-8B` (used by the copilot) and embeddings `bge-small-en-v1.5` (used by **onb-corpus**). The web frontend is a thin chat client that talks only to the copilot.
 
 ### D2 — ONB is the single source of truth; the copilot is stateless
 

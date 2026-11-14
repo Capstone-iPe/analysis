@@ -9,7 +9,7 @@ Capstone templates:
 - [Track A / Track B selection](references/Capstone-Templates-GenAI-Agentic-AI.pdf)
 - [Course schedule](references/EPGC-GenAI-Agentic-AI-schedule.pdf)
 
-The HLD is [ADR-0001-architecture.md](ADR-0001-architecture.md). The retrieval pack and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus) (`copilot-svc` calls it with Bearer auth). The gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Templates-GenAI-Agentic-AI.pdf).
+The HLD is [ADR-0001-architecture.md](ADR-0001-architecture.md). The retrieval pack and search API live in [Capstone-iPe/onb-corpus](https://github.com/Capstone-iPe/onb-corpus) (`copilot-svc` calls it with Bearer auth). Evaluator summary: [capstone-ipe.github.io/onb-corpus](https://capstone-ipe.github.io/onb-corpus/). The gold set is [eval/](eval/) (71 full shops). Do not put `eval/` into the RAG index. Capstone weeks below follow Track B in [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Templates-GenAI-Agentic-AI.pdf).
 
 The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). The interactive chat prototype (no backend) is at [prototype/](https://capstone-ipe.github.io/analysis/prototype/). Locally, open [docs/index.html](docs/index.html).
 
@@ -97,7 +97,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Corpus size in range: [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) has 500 documents (cap 2,000).
 - [x] Chunking, hybrid retrieval (keyword + dense), and a reranker exist in `onb-corpus`; copilot calls the search API.
 - [x] Citation-grounded why / explain path (RAG cites; ONB decides).
-- [x] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps): [onb-corpus eval/retrieval.md](https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md).
+- [x] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps): [onb-corpus Pages](https://capstone-ipe.github.io/onb-corpus/) · [eval/retrieval.md](https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md).
 - [x] **recall@k** measured separately from end-to-end answer quality: hit@4 = 0.958, hit@8 = 1.0 (hybrid 800/120); [eval/results](https://github.com/Capstone-iPe/onb-corpus/tree/main/eval/results).
 
 ### Week 3 — agentic layer

@@ -14,7 +14,8 @@
         Progress by Capstone week, with a short TL;DR and links into the evidence.
         Product code lives in <code>copilot-svc</code>, <code>onb-svc</code>, and <code>copilot-web-app</code>;
         the policy pack and search API are
-        <a href="https://github.com/Capstone-iPe/onb-corpus">Capstone-iPe/onb-corpus</a>.
+        <a href="https://github.com/Capstone-iPe/onb-corpus">Capstone-iPe/onb-corpus</a>
+        (<a href="https://capstone-ipe.github.io/onb-corpus/">evaluator Pages</a>).
         This repo holds the ADR, eval set, and write-ups.
       </p>
       <ul class="quick">
@@ -22,7 +23,8 @@
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/ADR-0001-architecture.md">ADR-0001</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md">Repo README</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/tree/main/eval">Gold set (71 shops)</a></li>
-        <li><a href="https://github.com/Capstone-iPe/onb-corpus">onb-corpus</a></li>
+        <li><a href="https://capstone-ipe.github.io/onb-corpus/">onb-corpus Pages</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-corpus">onb-corpus repo</a></li>
         <li><a href="https://github.com/Capstone-iPe/copilot-svc">copilot-svc</a></li>
         <li><a href="https://github.com/Capstone-iPe/onb-svc">onb-svc</a></li>
         <li><a href="https://github.com/Capstone-iPe/copilot-web-app">copilot-web-app</a></li>
@@ -67,6 +69,8 @@
         (hybrid dense + keyword). Local experiments kept <strong>800/120 + hybrid</strong>
         (hit@4 = 0.958, hit@8 = 1.0); CrossEncoder rerank did not help hit@4 and stays off Render.
         Copilot calls <code>/v1/search</code> for why/cite.
+        Summary for evaluators:
+        <a href="https://capstone-ipe.github.io/onb-corpus/">capstone-ipe.github.io/onb-corpus</a>.
       </p>
       <ul class="checks">
         <li class="ok">Corpus size in range (500 docs; cap 2,000) in <code>onb-corpus</code></li>
@@ -76,8 +80,10 @@
         <li class="ok">hit@4 / hit@8 on a fixed question set (local)</li>
       </ul>
       <ul class="dives">
-        <li><a href="https://github.com/Capstone-iPe/onb-corpus">Deep dive · onb-corpus</a></li>
-        <li><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/week2-retrieval.md">Deep dive · Week 2 retrieval write-up</a></li>
+        <li><a href="https://capstone-ipe.github.io/onb-corpus/">Deep dive · onb-corpus Pages (evaluator)</a></li>
+        <li><a href="https://capstone-ipe.github.io/onb-corpus/team/">Deep dive · onb-corpus team notes</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-corpus">Deep dive · onb-corpus repo</a></li>
+        <li><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md">Deep dive · retrieval write-up</a></li>
         <li><a href="https://github.com/Capstone-iPe/onb-corpus/tree/main/eval">Deep dive · recall question set + results</a></li>
         <li><a href="https://github.com/Capstone-iPe/onb-corpus/blob/main/README.md">Deep dive · search API commands</a></li>
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/README.md#week-2--rag">Deep dive · Week 2 checklist</a></li>

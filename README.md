@@ -105,9 +105,9 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Tool-using loop over at least three tools (five ONB MCP tools).
 - [x] Explicit decide → act → say/critic path; persistent application state in ONB; ≤10 steps.
 - [x] Error handling for bad labels, tool errors, and refusals (JSON schema on intent; retries on the classifier).
-- [ ] End-to-end accuracy write-up against the gold set (replay numbers recorded in the report).
-- [ ] Failure taxonomy: retrieval miss, reasoning / wrong next step, tool-call error, hallucination / made-up policy.
-- [ ] Tracing dashboard (LangSmith, Langfuse, or OpenTelemetry) — or export of the per-turn `trace` log.
+- [x] End-to-end accuracy write-up against the gold set (replay numbers in [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md)).
+- [x] Failure taxonomy: retrieval miss, wrong next step, tool-call error, hallucination / made-up policy (same doc).
+- [ ] Tracing dashboard (LangSmith, Langfuse, or OpenTelemetry) — per-turn `trace` schema is defined; export/dashboard still open.
 
 ### Week 4 — ship it
 
@@ -131,11 +131,12 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 
 ### Still open before CLI submission
 
-- [ ] **copilot-svc README** — how to run the CLI, build the index, set `CHAT_API_KEY`, and run replay / holdout
+- [x] **copilot-svc README** — CLI, env, replay / holdout / retrieval / questions runners
 - [x] **Week 1-II prompting runs** — [prompting-baseline/prompting-baseline.md](prompting-baseline/prompting-baseline.md) (still copy into the Capstone report later)
 - [x] **Week 2 recall@k** — scored in onb-corpus; hit@4 / hit@8 on fixed questions
-- [ ] **Week 3–4 failure taxonomy + traces** — retrieval miss, wrong next step, bad tool call, made-up policy
+- [x] **Week 3 failure taxonomy + traces** — [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md)
 - [ ] Label the demo as **CLI-only** so Week 4 UI / container / rate limit / cache are not claimed as done
+- [x] Confirm recorded replay pass rates — build 50/50, holdout 21/21 in `copilot-svc/docs/results/`
 
 ### Deferred until web integration
 

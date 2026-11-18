@@ -77,7 +77,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 | II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [prompting-baseline/](prompting-baseline/). |
 | III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall@k still to score. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
-| V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Taxonomy and a trace dashboard still open. |
+| V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Scores + taxonomy in copilot-svc; trace dashboard still open. |
 | VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat + copilot deploy. Injection, PII, no activate tool, human for go-live. |
 
 ## Capstone weeks (Track B)
@@ -111,10 +111,10 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 
 ### Week 4 — ship it
 
-- [ ] Streamlit or React front-end wired to the copilot (prototype exists; live backend integration open).
+- [x] Front-end wired to live copilot (Google bearer → copilot → ONB); happy path works. History persistence and polish still open.
 - [ ] Containerised deploy with rate limiting and caching.
 - [x] Responsible-AI baseline: injection tests / adversarial lines, digit redaction, no activate tool, human-in-the-loop for go-live.
-- [ ] 12-page technical report and 10-minute demo (CLI first is fine until web is wired).
+- [ ] 12-page technical report and 10-minute demo.
 
 ## Submission checklist (CLI first)
 
@@ -138,9 +138,13 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 - [ ] Label the demo as **CLI-only** so Week 4 UI / container / rate limit / cache are not claimed as done
 - [x] Confirm recorded replay pass rates — build 50/50, holdout 21/21 in `copilot-svc/docs/results/`
 
-### Deferred until web integration
+### Open after live web happy path
 
-- [ ] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). Contract not frozen here
+- [x] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). Contract not frozen as a standard here
 - [ ] Conversation history for the chat UX (not used to decide tools or the verdict)
-- [ ] Web UI, container, rate limit, cache
-- [ ] End-to-end Lotus Tea House through the web chat
+- [ ] Tracing dashboard / exported per-turn traces (last Week 3 item)
+- [ ] Container, rate limit, cache
+- [ ] Recorded end-to-end Lotus Tea House through the live web chat
+- [ ] 12-page report + 10-minute demo
+
+Team split lives on the mentor dashboard: [docs/index.html § Open work for the team](https://capstone-ipe.github.io/analysis/#team-tasks).

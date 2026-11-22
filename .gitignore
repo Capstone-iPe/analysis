@@ -3,3 +3,6 @@ __pycache__/
 .env
 prompting-baseline/.env
 *.crt
+corpus/stats.json
+synth/.venv/
+synth/out/

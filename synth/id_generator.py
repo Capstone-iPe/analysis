@@ -21,7 +21,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 import qrcode
 
-SPECIMEN = "SPECIMEN - TEST IDENTITY DOCUMENT - NOT AN OFFICIAL RECORD"
+SPECIMEN = ""
 
 _FONT_PATHS = [
     "/System/Library/Fonts/Supplemental/Arial.ttf",

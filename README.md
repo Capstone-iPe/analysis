@@ -89,7 +89,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] **I.** Spec: what the copilot does, what it refuses, and what a correct answer is. [ADR-0001](ADR-0001-architecture.md), this README, and [IPE-PRD-001](https://rupeshsasne.github.io/iit-kgp-assignment05/ipe-prd.html).
 - [x] **I.** Gold set: 71 shops in [eval/](eval/) (60–100 required). Frozen before the agent loop.
 - [x] **II.** Three strategies compared on Qwen3-8B (structured few-shot 6/10; CoT and decomposition 0/10). Write-up + runner + cases + results: [prompting-baseline/](prompting-baseline/) (not copilot agent code).
-- [ ] LLD (ours, not a template gate): FE ↔ copilot fields are not written yet; the contract is not frozen here.
+- [x] LLD (ours, not a template gate): FE ↔ copilot `ConversationView` frozen at v1.0 in [docs/LLD-0002-web-chat-contract.md](docs/LLD-0002-web-chat-contract.md). Exam-harness JSON is kept out of the product contract.
 - [x] Extra: HLD in [ADR-0001](ADR-0001-architecture.md); policy search in [onb-corpus](https://github.com/Capstone-iPe/onb-corpus); mentor dashboard + [prototype](https://capstone-ipe.github.io/analysis/prototype/).
 
 ### Week 2 — RAG

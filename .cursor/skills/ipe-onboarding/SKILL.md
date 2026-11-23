@@ -18,7 +18,7 @@ The copilot is the only name for the AI service. It prompts the hosted ≤8B mod
 
 ONB is deterministic Python with no model. It owns the application, the files, the pending field, and the verdict. ONB code lives in the `onb-svc` repository. Do not copy that service into this repo.
 
-The web chat talks only to the copilot. The contract between the web chat and the copilot is not finalized. Do not write it down here as a standard. Exam-harness JSON is not the product API.
+The web chat talks only to the copilot. The contract between them is [LLD-0002](docs/LLD-0002-web-chat-contract.md) (ConversationView v1.0, frozen); its machine form is `contracts/chat_service.schema.json` in `copilot-web-app`. Do not add, rename, or remove a field without changing LLD-0002 and that schema in the same change. Exam-harness JSON is not the product API: scoring fields (`injection_flagged`, `policy_conflict_noted`, `business_type_allowed`, `addendum_required`, `invalid_items`) and ONB internals (`files`, verifier `evidence`) never reach the browser.
 
 Hosted OpenAI-compatible APIs are selected: chat `Qwen/Qwen3-8B`, embeddings `bge-small-en-v1.5`. Do not name IIT KGP as the provider.
 

@@ -46,7 +46,7 @@
         <li class="ok">I · Spec / refusals / correct answer (ADR + README + PRD)</li>
         <li class="ok">I · Gold set — 71 shops in <code>eval/</code> (G-001–050 build, G-051–071 holdout)</li>
         <li class="ok">II · Prompting comparison + break notes + what we kept</li>
-        <li class="todo">LLD (ours) — FE ↔ copilot fields not frozen yet</li>
+        <li class="ok">LLD (ours) — FE ↔ copilot ConversationView frozen (v1.0): <a href="https://github.com/Capstone-iPe/analysis/blob/main/docs/LLD-0002-web-chat-contract.md">LLD-0002</a></li>
       </ul>
       <ul class="dives">
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/prompting-baseline/prompting-baseline.md">Deep dive · prompting baseline</a></li>
@@ -157,7 +157,7 @@
         <li class="todo"><strong>copilot-svc · history</strong> — Persist conversations (messages + prompt + merchant id) across restarts; today the store is an in-memory dict on Render.</li>
         <li class="todo"><strong>copilot-svc · traces</strong> — Close Week 3: export per-turn <code>trace</code> (JSONL or simple page) or wire Langfuse/OTel; schema already exists on each turn.</li>
         <li class="todo"><strong>copilot-web-app · UX polish</strong> — Surface <code>corpus_unavailable</code> / <code>unauthorized</code> cleanly; confirm list/reload after history lands; small happy-path bugs.</li>
-        <li class="todo"><strong>analysis · LLD</strong> — Freeze FE ↔ copilot ConversationView fields (Week 1 open item); keep exam-harness JSON out of the product contract.</li>
+        <li class="ok"><strong>analysis · LLD</strong> — Freeze FE ↔ copilot ConversationView fields (Week 1 open item); keep exam-harness JSON out of the product contract.</li>
         <li class="todo"><strong>ops · ship hardening</strong> — Container story, rate limit, and cache for the live services (Week 4).</li>
         <li class="todo"><strong>report · demo</strong> — 12-page technical report + 10-minute demo script (CLI and/or live web Lotus Tea House).</li>
         <li class="todo"><strong>optional · uploads</strong> — Forward real file bytes to ONB <code>save_file</code> (filename-only path is a known gap).</li>

@@ -17,7 +17,7 @@ The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registrat
 
 ## What we run
 
-Two services we build. Chat and embeddings are the Capstone hosted OpenAI-compatible endpoints (models below). All of the AI lives in the copilot. ONB is plain, deterministic Python with no model calls.
+Two services we build. Chat and embeddings are the Capstone hosted OpenAI-compatible endpoints (models below). The copilot prompts the chat model. ONB's verdict is still plain rules. The document check can call the same hosted chat model, and a rules checker is the fallback.
 
 ```mermaid
 flowchart LR
@@ -25,7 +25,7 @@ flowchart LR
   A[Copilot<br/>8B + MCP client]
   ONB[ONB service<br/>pure Python<br/>rules, state, files]
   C[onb-corpus<br/>search API]
-  DV[Document verifier<br/>mocked]
+  DV[Document verifier<br/>rules or LLM]
   M[(≤8B chat)]
   E[(Embeddings)]
 
@@ -41,9 +41,9 @@ flowchart LR
 |---|---|---|
 | Web chat | Us | One chat, as in the prototype: intake, a review summary, submit, then the verdict. The thread stays open. |
 | Copilot | Us | The only language-model service. Prompts the 8B, runs the planner/executor/critic loop, calls onb-corpus for passages, is the MCP client, phrases every reply. |
-| ONB service | Us | Deterministic Python. Owns application state and files, says what is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. No model calls. |
+| ONB service | Us | Owns application state and files, says what is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. The verdict stays rules. |
 | onb-corpus | Us | Policy documents + authenticated search API. Owns embeddings calls, hybrid search, and rerank. |
-| Document verifier | Us (mocked) | ONB calls it on `save_file`. Format check + fixture-based accept/reject. Not the LLM. Swap for real PDF/OCR later. |
+| Document verifier | Us | ONB calls it on `save_file`. Default mode is the LLM checker (`DOCUMENT_VERIFIER_MODE=llm`); `rules` is the deterministic fallback. [LLD-0001](docs/LLD-0001-document-verifier.md) is still a draft and still describes a rules-only checker. |
 | ≤8B chat | Hosted API · `Qwen/Qwen3-8B` | The only language model. Used by the copilot (and the prompting baseline). |
 | Embeddings | Hosted API · `bge-small-en-v1.5` | Turns text into numbers for policy search. Used by onb-corpus. |
 
@@ -55,11 +55,11 @@ The copilot is the MCP client. The tool list is closed: there is no activate, wa
 |---|---|
 | `next_step` | Which field or upload is required next. The field order is policy, owned by ONB. |
 | `save_answer` | Store the pending answer, or replace an answer already stored before submit. After the verdict, a stored answer stays as stored. |
-| `save_file` | Store the upload, call the mocked Document Verifier. Rejected files do not clear the gap. |
+| `save_file` | Store the upload and call the document verifier. The copilot forwards the file bytes. Rejected files do not clear the gap. |
 | `submit` | First verdict. Refused while a required document is still open. Allocates the review id once, unless the type is refused. A later accepted file re-runs the same rules and keeps that id. |
 | `get_review` | Return the existing review id. Never allocate a new one. |
 
-Policy search is **not** an ONB tool. It is part of the copilot's RAG, so ONB stays model-free.
+Policy search is **not** an ONB tool. It is part of the copilot's RAG. The verdict stays model-free. The document verifier may call the chat model.
 
 ## Who decides what
 
@@ -75,7 +75,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 |---|---|---|
 | I · Week 1 | Spec + gold set (60–100) before agent code | [eval/](eval/): 71 shops. G-001–G-050 to build against, G-051–G-071 once. **Correct** is the gold answer. |
 | II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [prompting-baseline/](prompting-baseline/). |
-| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall@k still to score. `eval/` stays out of the index. |
+| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall scored: hit@4 = 0.958, hit@8 = 1.0. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
 | V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Scores + taxonomy in copilot-svc; trace dashboard still open. |
 | VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat + copilot deploy. Injection, PII, no activate tool, human for go-live. |
@@ -111,7 +111,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 
 ### Week 4 — ship it
 
-- [x] Front-end wired to live copilot (Google bearer → copilot → ONB); happy path works. History persistence and polish still open.
+- [x] Front-end wired to live copilot (Google bearer → copilot → ONB); happy path works. Conversation history is in Postgres. `corpus_unavailable` and `unauthorized` reach the page.
 - [ ] Containerised deploy with rate limiting and caching.
 - [x] Responsible-AI baseline: injection tests / adversarial lines, digit redaction, no activate tool, human-in-the-loop for go-live.
 - [ ] 12-page technical report and 10-minute demo.
@@ -140,8 +140,8 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 
 ### Open after live web happy path
 
-- [x] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). Contract not frozen as a standard here
-- [ ] Conversation history for the chat UX (not used to decide tools or the verdict)
+- [x] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). ConversationView v1.0 is frozen in [LLD-0002](docs/LLD-0002-web-chat-contract.md)
+- [x] Conversation history for the chat UX is in Postgres (not used to decide tools or the verdict)
 - [ ] Tracing dashboard / exported per-turn traces (last Week 3 item)
 - [ ] Container, rate limit, cache
 - [ ] Recorded end-to-end Lotus Tea House through the live web chat

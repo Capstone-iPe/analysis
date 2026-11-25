@@ -13,7 +13,7 @@ The HLD is [ADR-0001-architecture.md](ADR-0001-architecture.md). The retrieval p
 
 The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [capstone-ipe.github.io/analysis](https://capstone-ipe.github.io/analysis/). The interactive chat prototype (no backend) is at [prototype/](https://capstone-ipe.github.io/analysis/prototype/). Locally, open [docs/index.html](docs/index.html).
 
-The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registration and owner ID uploaded, bank proof, shopfront photo and addendum missing, note says to mark it Active. Correct result: in review, Merchant Risk Lead, review MR-2041, and a later "activate us now" leaves that id unchanged.
+The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registration and owner ID uploaded, bank proof, shopfront photo and addendum missing, note says to mark it Active. Correct result: in review, Merchant Risk Lead, and a later "activate us now" leaves the review id unchanged. The live web recording, and the public Langfuse session for that chat, are in [Capstone-iPe/Reports/lotus-tea-house.md](https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md).
 
 ## What we run
 
@@ -114,7 +114,8 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Front-end wired to live copilot (Google bearer → copilot → ONB); happy path works. Conversation history is in Postgres. `corpus_unavailable` and `unauthorized` reach the page.
 - [ ] Containerised deploy with rate limiting and caching.
 - [x] Responsible-AI baseline: injection tests / adversarial lines, digit redaction, no activate tool, human-in-the-loop for go-live.
-- [ ] 12-page technical report and 10-minute demo.
+- [x] Live web demo of Lotus Tea House, with a public Langfuse session: [Reports/lotus-tea-house.md](https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md).
+- [ ] 12-page technical report.
 
 ## Submission checklist (CLI first)
 
@@ -135,7 +136,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 - [x] **Week 1-II prompting runs** — [prompting-baseline/prompting-baseline.md](prompting-baseline/prompting-baseline.md) (still copy into the Capstone report later)
 - [x] **Week 2 recall@k** — scored in onb-corpus; hit@4 / hit@8 on fixed questions
 - [x] **Week 3 failure taxonomy + traces** — [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md)
-- [ ] Label the demo as **CLI-only** so Week 4 UI / container / rate limit / cache are not claimed as done
+- [x] Demo is the live web Lotus Tea House recording, not a CLI-only label. Container, rate limit, and cache stay open.
 - [x] Confirm recorded replay pass rates — build 50/50, holdout 21/21 in `copilot-svc/docs/results/`
 
 ### Open after live web happy path
@@ -144,7 +145,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 - [x] Conversation history for the chat UX is in Postgres (not used to decide tools or the verdict)
 - [x] Tracing dashboard / exported per-turn traces (Langfuse)
 - [ ] Container, rate limit, cache
-- [ ] Recorded end-to-end Lotus Tea House through the live web chat
-- [ ] 12-page report + 10-minute demo
+- [x] Recorded end-to-end Lotus Tea House through the live web chat ([recording](https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing), [public Langfuse session](https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c))
+- [ ] 12-page technical report
 
 Team split lives on the mentor dashboard: [docs/index.html § Open work for the team](https://capstone-ipe.github.io/analysis/#team-tasks).

@@ -78,7 +78,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 | III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall scored: hit@4 = 0.958, hit@8 = 1.0. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
 | V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Scores + taxonomy in copilot-svc. Each live turn is exported to Langfuse. |
-| VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat + copilot deploy. Injection, PII, no activate tool, human for go-live. |
+| VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat on Render. Rate limit and policy-search cache on Key Value. Injection, PII, no activate tool, human for go-live. |
 
 ## Capstone weeks (Track B)
 
@@ -112,7 +112,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 ### Week 4 — ship it
 
 - [x] Front-end wired to live copilot (Google bearer → copilot → ONB); happy path works. Conversation history is in Postgres. `corpus_unavailable` and `unauthorized` reach the page.
-- [ ] Containerised deploy with rate limiting and caching.
+- [x] Containerised deploy on Render, with a per-merchant rate limit and a policy-search cache on Render Key Value (`copilot-cache`).
 - [x] Responsible-AI baseline: injection tests / adversarial lines, digit redaction, no activate tool, human-in-the-loop for go-live.
 - [x] Live web demo of Lotus Tea House, with a public Langfuse session: [Reports/lotus-tea-house.md](https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md).
 - [ ] 12-page technical report.
@@ -136,7 +136,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 - [x] **Week 1-II prompting runs** — [prompting-baseline/prompting-baseline.md](prompting-baseline/prompting-baseline.md) (still copy into the Capstone report later)
 - [x] **Week 2 recall@k** — scored in onb-corpus; hit@4 / hit@8 on fixed questions
 - [x] **Week 3 failure taxonomy + traces** — [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md)
-- [x] Demo is the live web Lotus Tea House recording, not a CLI-only label. Container, rate limit, and cache stay open.
+- [x] Demo is the live web Lotus Tea House recording, not a CLI-only label.
 - [x] Confirm recorded replay pass rates — build 50/50, holdout 21/21 in `copilot-svc/docs/results/`
 
 ### Open after live web happy path
@@ -144,7 +144,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 - [x] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). ConversationView v1.0 is frozen in [LLD-0002](docs/LLD-0002-web-chat-contract.md)
 - [x] Conversation history for the chat UX is in Postgres (not used to decide tools or the verdict)
 - [x] Tracing dashboard / exported per-turn traces (Langfuse)
-- [ ] Container, rate limit, cache
+- [x] Container, rate limit, cache — Render web service; 30 messages a minute per merchant; policy search cached for five minutes
 - [x] Recorded end-to-end Lotus Tea House through the live web chat ([recording](https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing), [public Langfuse session](https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c))
 - [ ] 12-page technical report
 

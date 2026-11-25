@@ -129,14 +129,14 @@
         <strong>TL;DR:</strong> Live web happy path works (Google bearer → copilot → ONB MCP; welcome + field flow).
         Conversation history is in Postgres. Uploaded file bytes go to ONB, and the document checker defaults to the LLM path with a rules fallback.
         The Lotus Tea House live-web run is recorded, with a public Langfuse session.
-        Container / rate-limit / cache and the 12-page report are open.
+        Rate limiting and the policy-search cache use Render Key Value. The 12-page report is open.
         Responsible-AI baseline already includes injection refusals, digit redaction, no activate tool, and a human for go-live.
       </p>
       <ul class="checks">
         <li class="ok">Responsible-AI baseline (guards, redact, no activate, human-in-the-loop)</li>
         <li class="ok">FE wired to live copilot (happy path); history in Postgres; named errors reach the page</li>
         <li class="ok">Lotus Tea House recorded on the live web chat, with a <a href="https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c">public Langfuse session</a></li>
-        <li class="todo">Container + rate limit + cache</li>
+        <li class="ok">Render service, with a per-merchant rate limit and a policy-search cache on Key Value</li>
         <li class="todo">12-page technical report</li>
       </ul>
       <ul class="dives">
@@ -163,7 +163,7 @@
         <li class="ok"><strong>copilot-svc · traces</strong> — Each live turn is exported to Langfuse. The session id is the application id.</li>
         <li class="ok"><strong>copilot-web-app · UX polish</strong> — <code>corpus_unavailable</code> and <code>unauthorized</code> reach the page; list/reload is covered; the latest message stays in view on a phone.</li>
         <li class="ok"><strong>analysis · LLD</strong> — Freeze FE ↔ copilot ConversationView fields (Week 1 open item); keep exam-harness JSON out of the product contract.</li>
-        <li class="todo"><strong>ops · ship hardening</strong> — Container story, rate limit, and cache for the live services (Week 4).</li>
+        <li class="ok"><strong>ops · ship hardening</strong> — The copilot runs on Render. Messages are limited per merchant, and policy search is cached, both on Key Value <code>copilot-cache</code>.</li>
         <li class="ok"><strong>demo · Lotus Tea House</strong> — Live web recording and a public Langfuse session: <a href="https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md">lotus-tea-house.md</a>.</li>
         <li class="todo"><strong>report</strong> — 12-page technical report is still open.</li>
         <li class="ok"><strong>uploads</strong> — The copilot forwards the file bytes to ONB <code>save_file</code>. PDF, JPG, and PNG are accepted.</li>
@@ -180,7 +180,7 @@
       Hosted from the <code>docs/</code> folder on
       <a href="https://github.com/Capstone-iPe/analysis">Capstone-iPe/analysis</a>.
       Capstone template weeks I–VI map to the sections above.
-      Last focused evidence drop: 25 Nov 2026 — Lotus Tea House live-web recording and its public Langfuse session; Langfuse traces on the copilot.
+      Last focused evidence drop: 25 Nov 2026 — rate limit and policy-search cache on Render Key Value; Lotus Tea House recording and Langfuse traces.
     </p>
   </div>
 </body>

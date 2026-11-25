@@ -77,7 +77,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 | II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [prompting-baseline/](prompting-baseline/). |
 | III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall scored: hit@4 = 0.958, hit@8 = 1.0. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
-| V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Scores + taxonomy in copilot-svc; trace dashboard still open. |
+| V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Scores + taxonomy in copilot-svc. Each live turn is exported to Langfuse. |
 | VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat + copilot deploy. Injection, PII, no activate tool, human for go-live. |
 
 ## Capstone weeks (Track B)
@@ -107,7 +107,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Error handling for bad labels, tool errors, and refusals (JSON schema on intent; retries on the classifier).
 - [x] End-to-end accuracy write-up against the gold set (replay numbers in [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md)).
 - [x] Failure taxonomy: retrieval miss, wrong next step, tool-call error, hallucination / made-up policy (same doc).
-- [ ] Tracing dashboard (LangSmith, Langfuse, or OpenTelemetry) — per-turn `trace` schema is defined; export/dashboard still open.
+- [x] Tracing dashboard (Langfuse) — each live turn is exported; the session id is the ONB application id. Write-up in [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md).
 
 ### Week 4 — ship it
 
@@ -142,7 +142,7 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 
 - [x] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). ConversationView v1.0 is frozen in [LLD-0002](docs/LLD-0002-web-chat-contract.md)
 - [x] Conversation history for the chat UX is in Postgres (not used to decide tools or the verdict)
-- [ ] Tracing dashboard / exported per-turn traces (last Week 3 item)
+- [x] Tracing dashboard / exported per-turn traces (Langfuse)
 - [ ] Container, rate limit, cache
 - [ ] Recorded end-to-end Lotus Tea House through the live web chat
 - [ ] 12-page report + 10-minute demo

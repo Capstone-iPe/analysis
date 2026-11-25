@@ -95,20 +95,20 @@
     <section class="week" id="week-3">
       <div class="week-head">
         <h2><a href="#week-3">Week 3 — Agentic layer + eval</a></h2>
-        <span class="pill progress">Almost done</span>
+        <span class="pill done">Done</span>
       </div>
       <p class="tldr">
         <strong>TL;DR:</strong> Hand-rolled loop over five ONB MCP tools (decide → act → say/critic).
         Application state and review id live in ONB. Replay scores and failure taxonomy are written in
         <a href="https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md">copilot-svc/docs/eval.md</a>
-        (build 50/50, holdout 21/21). Remaining Week 3 item: a tracing dashboard or exported per-turn traces.
+        (build 50/50, holdout 21/21). Each live turn is exported to Langfuse, and the session id is the application id.
       </p>
       <ul class="checks">
         <li class="ok">≥3 tools (five MCP tools) + persistent ONB state</li>
         <li class="ok">Planner/executor/critic-shaped path; classifier JSON schema + retry</li>
         <li class="ok">E2E accuracy numbers written into the report (replay build + holdout)</li>
         <li class="ok">Failure taxonomy (retrieval / next step / tool / hallucination)</li>
-        <li class="todo">Tracing dashboard (or exported per-turn traces)</li>
+        <li class="ok">Tracing dashboard — Langfuse receives a trace for each live turn</li>
       </ul>
       <ul class="dives">
         <li><a href="https://github.com/Capstone-iPe/analysis/blob/main/ADR-0001-architecture.md">Deep dive · two-service tool wall</a></li>
@@ -151,12 +151,12 @@
         <span class="pill open">Split these</span>
       </div>
       <p class="tldr">
-        <strong>TL;DR:</strong> Happy path is live. Split the remaining work by repo so Week 3 can close and Week 4 can ship.
+        <strong>TL;DR:</strong> Week 3 is closed. Happy path is live. Split the remaining Week 4 work by repo.
         Do not add tools, pack items, or a second architecture (ADR-0001).
       </p>
       <ul class="checks">
         <li class="ok"><strong>copilot-svc · history</strong> — Conversations persist in Postgres (<code>copilot_conversations</code>, <code>copilot_turns</code>). History does not decide tools or the verdict.</li>
-        <li class="todo"><strong>copilot-svc · traces</strong> — Close Week 3: Langfuse is wired and stays off until <code>COPILOT_LANGFUSE_ENABLED</code> and the project keys are set. Export is not live.</li>
+        <li class="ok"><strong>copilot-svc · traces</strong> — Each live turn is exported to Langfuse. The session id is the application id.</li>
         <li class="ok"><strong>copilot-web-app · UX polish</strong> — <code>corpus_unavailable</code> and <code>unauthorized</code> reach the page; list/reload is covered; the latest message stays in view on a phone.</li>
         <li class="ok"><strong>analysis · LLD</strong> — Freeze FE ↔ copilot ConversationView fields (Week 1 open item); keep exam-harness JSON out of the product contract.</li>
         <li class="todo"><strong>ops · ship hardening</strong> — Container story, rate limit, and cache for the live services (Week 4).</li>
@@ -175,7 +175,7 @@
       Hosted from the <code>docs/</code> folder on
       <a href="https://github.com/Capstone-iPe/analysis">Capstone-iPe/analysis</a>.
       Capstone template weeks I–VI map to the sections above.
-      Last focused evidence drop: 25 Nov 2026 — LLD-0002 v1.0, Postgres history, real file bytes, document checker on onb-svc.
+      Last focused evidence drop: 25 Nov 2026 — Langfuse traces live on the copilot; LLD-0002 v1.0, Postgres history, real file bytes, document checker on onb-svc.
     </p>
   </div>
 </body>

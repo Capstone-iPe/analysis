@@ -159,4 +159,4 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Recorded end-to-end Lotus Tea House through the live web chat ([recording](https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing), [public Langfuse session](https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c))
 - [x] 12-page technical report: [Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf](https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf)
 
-Team split lives on the mentor dashboard: [docs/index.html § Open work for the team](https://capstone-ipe.github.io/analysis/#team-tasks).
+The mentor dashboard is [docs/index.html](https://capstone-ipe.github.io/analysis/#team-tasks).

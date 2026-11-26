@@ -1,4 +1,5 @@
 .DS_Store
+.cursor/
 __pycache__/
 .env
 prompting-baseline/.env

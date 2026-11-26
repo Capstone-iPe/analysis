@@ -15,6 +15,19 @@ The mentor dashboard (weeks, TL;DR, evidence links) is the GitHub Pages home: [c
 
 The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registration and owner ID uploaded, bank proof, shopfront photo and addendum missing, note says to mark it Active. Correct result: in review, Merchant Risk Lead, and a later "activate us now" leaves the review id unchanged. The live web recording, and the public Langfuse session for that chat, are in [Capstone-iPe/Reports/lotus-tea-house.md](https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md).
 
+## Repositories
+
+| Repo | What it is | Live |
+|---|---|---|
+| [analysis](https://github.com/Capstone-iPe/analysis) (this repo) | HLD, gold set, prompting baseline, mentor page | [Pages](https://capstone-ipe.github.io/analysis/) |
+| [onb-svc](https://github.com/Capstone-iPe/onb-svc) | Application, files, verdict, five MCP tools | [https://onb-k8ud.onrender.com](https://onb-k8ud.onrender.com) |
+| [copilot-svc](https://github.com/Capstone-iPe/copilot-svc) | The only language-model service. MCP client, RAG client | [https://copilot-svc.onrender.com](https://copilot-svc.onrender.com) |
+| [copilot-web-app](https://github.com/Capstone-iPe/copilot-web-app) | Merchant website. Talks only to the copilot | [https://copilot-web-n05u.onrender.com](https://copilot-web-n05u.onrender.com) |
+| [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) | Policy pack and search API | [https://onb-corpus.onrender.com](https://onb-corpus.onrender.com) |
+| [Reports](https://github.com/Capstone-iPe/Reports) | 12-page submission report and the Lotus Tea House recording | [PDF](https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf) |
+
+`GOOGLE_ENFORCE_ALLOWED_EMAILS` is off on the website, the copilot, and ONB, so any verified Google account can sign in. The free Render services sleep after about 15 minutes. Open the site, then [copilot health](https://copilot-svc.onrender.com/v1/health), [ONB health](https://onb-k8ud.onrender.com/health), and [corpus health](https://onb-corpus.onrender.com/health), and wait about a minute.
+
 ## What we run
 
 Two services we build. Chat and embeddings are the Capstone hosted OpenAI-compatible endpoints (models below). The copilot prompts the chat model. ONB's verdict is still plain rules. The document check can call the same hosted chat model, and a rules checker is the fallback.
@@ -42,7 +55,7 @@ flowchart LR
 | Web chat | Us | One chat, as in the prototype: intake, a review summary, submit, then the verdict. The thread stays open. |
 | Copilot | Us | The only language-model service. Prompts the 8B, runs the planner/executor/critic loop, calls onb-corpus for passages, is the MCP client, phrases every reply. |
 | ONB service | Us | Owns application state and files, says what is needed next, runs the rule engine on submit and again when a file arrives after submit, allocates the review id once. The verdict stays rules. |
-| onb-corpus | Us | Policy documents + authenticated search API. Owns embeddings calls, hybrid search, and rerank. |
+| onb-corpus | Us | Policy documents + authenticated search API. Owns embeddings calls and hybrid search. A reranker was measured and not kept. |
 | Document verifier | Us | ONB calls it on `save_file`. Default mode is the LLM checker (`DOCUMENT_VERIFIER_MODE=llm`); `rules` is the deterministic fallback. [LLD-0001](docs/LLD-0001-document-verifier.md) is still a draft and still describes a rules-only checker. |
 | ≤8B chat | Hosted API · `Qwen/Qwen3-8B` | The only language model. Used by the copilot (and the prompting baseline). |
 | Embeddings | Hosted API · `bge-small-en-v1.5` | Turns text into numbers for policy search. Used by onb-corpus. |
@@ -75,7 +88,7 @@ Almost all of it lives in the copilot; ONB is plain rules and covers no syllabus
 |---|---|---|
 | I · Week 1 | Spec + gold set (60–100) before agent code | [eval/](eval/): 71 shops. G-001–G-050 to build against, G-051–G-071 once. **Correct** is the gold answer. |
 | II · Week 1 | Three prompting strategies + how the ≤8B breaks | Done: [prompting-baseline/](prompting-baseline/). |
-| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Copilot calls `/v1/search`. Recall scored: hit@4 = 0.958, hit@8 = 1.0. `eval/` stays out of the index. |
+| III · Week 2 | RAG: 500–2,000 docs, chunking, hybrid, reranker, recall@k | [onb-corpus](https://github.com/Capstone-iPe/onb-corpus): 500 docs, 1,446 chunks + search API. Deployed search is hybrid 800/120. The reranker did not help hit@4 and is not in the live index. Copilot calls `/v1/search`. Recall scored: hit@4 = 0.958, hit@8 = 1.0. `eval/` stays out of the index. |
 | IV · Week 3 | Planner → executor → critic, ≥3 tools, state, error handling | Copilot loop over ONB's five MCP tools. Memory is the ONB application row. Hand-rolled (ADR-0001); LangGraph not required. |
 | V · Week 3–4 | E2E eval, failure taxonomy, tracing | Replay against [eval/](eval/). Scores + taxonomy in copilot-svc. Each live turn is exported to Langfuse. |
 | VI · Week 4 | UI, container, rate limit, cache + responsible AI | Web chat on Render. Rate limit and policy-search cache on Key Value. Injection, PII, no activate tool, human for go-live. |
@@ -95,7 +108,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 ### Week 2 — RAG
 
 - [x] Corpus size in range: [onb-corpus](https://github.com/Capstone-iPe/onb-corpus) has 500 documents (cap 2,000).
-- [x] Chunking, hybrid retrieval (keyword + dense), and a reranker exist in `onb-corpus`; copilot calls the search API.
+- [x] Chunking and hybrid retrieval (keyword + dense) are in `onb-corpus`. A reranker was measured and not kept. The copilot calls the search API.
 - [x] Citation-grounded why / explain path (RAG cites; ONB decides).
 - [x] Documented chunking / hybrid / rerank experiments (keep a setting only when it helps): [onb-corpus Pages](https://capstone-ipe.github.io/onb-corpus/) · [eval/retrieval.md](https://github.com/Capstone-iPe/onb-corpus/blob/main/eval/retrieval.md).
 - [x] **recall@k** measured separately from end-to-end answer quality: hit@4 = 0.958, hit@8 = 1.0 (hybrid 800/120); [eval/results](https://github.com/Capstone-iPe/onb-corpus/tree/main/eval/results).
@@ -115,11 +128,9 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Containerised deploy on Render, with a per-merchant rate limit and a policy-search cache on Render Key Value (`copilot-cache`).
 - [x] Responsible-AI baseline: injection tests / adversarial lines, digit redaction, no activate tool, human-in-the-loop for go-live.
 - [x] Live web demo of Lotus Tea House, with a public Langfuse session: [Reports/lotus-tea-house.md](https://github.com/Capstone-iPe/Reports/blob/main/lotus-tea-house.md).
-- [ ] 12-page technical report.
+- [x] 12-page technical report: [Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf](https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf).
 
-## Submission checklist (CLI first)
-
-Use this while the web rows above stay open. Revisit after FE ↔ copilot integration.
+## Submission checklist
 
 ### Ready for a CLI demo
 
@@ -130,22 +141,22 @@ Use this while the web rows above stay open. Revisit after FE ↔ copilot integr
 - [x] Unit and adversarial tests in `copilot-svc`
 - [x] Corpus indexed for RAG (≥500 docs); `eval/` stays out of the index
 
-### Still open before CLI submission
+### Recorded
 
 - [x] **copilot-svc README** — CLI, env, replay / holdout / retrieval / questions runners
-- [x] **Week 1-II prompting runs** — [prompting-baseline/prompting-baseline.md](prompting-baseline/prompting-baseline.md) (still copy into the Capstone report later)
+- [x] **Week 1-II prompting runs** — [prompting-baseline/prompting-baseline.md](prompting-baseline/prompting-baseline.md). The scores are in the submission report.
 - [x] **Week 2 recall@k** — scored in onb-corpus; hit@4 / hit@8 on fixed questions
 - [x] **Week 3 failure taxonomy + traces** — [copilot-svc/docs/eval.md](https://github.com/Capstone-iPe/copilot-svc/blob/main/docs/eval.md)
 - [x] Demo is the live web Lotus Tea House recording, not a CLI-only label.
 - [x] Confirm recorded replay pass rates — build 50/50, holdout 21/21 in `copilot-svc/docs/results/`
 
-### Open after live web happy path
+### Live web path
 
 - [x] FE talks only to the copilot (bearer); copilot talks to ONB (bearer). ConversationView v1.0 is frozen in [LLD-0002](docs/LLD-0002-web-chat-contract.md)
 - [x] Conversation history for the chat UX is in Postgres (not used to decide tools or the verdict)
 - [x] Tracing dashboard / exported per-turn traces (Langfuse)
 - [x] Container, rate limit, cache — Render web service; 30 messages a minute per merchant; policy search cached for five minutes
 - [x] Recorded end-to-end Lotus Tea House through the live web chat ([recording](https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing), [public Langfuse session](https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c))
-- [ ] 12-page technical report
+- [x] 12-page technical report: [Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf](https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf)
 
 Team split lives on the mentor dashboard: [docs/index.html § Open work for the team](https://capstone-ipe.github.io/analysis/#team-tasks).

@@ -28,6 +28,108 @@ The demo is Lotus Tea House. Restaurant in Pune, ₹12,00,000 a month, registrat
 
 `GOOGLE_ENFORCE_ALLOWED_EMAILS` is off on the website, the copilot, and ONB, so any verified Google account can sign in. The free Render services sleep after about 15 minutes. Open the site, then [copilot health](https://copilot-svc.onrender.com/v1/health), [ONB health](https://onb-k8ud.onrender.com/health), and [corpus health](https://onb-corpus.onrender.com/health), and wait about a minute.
 
+## Run the services locally
+
+Four processes, one directory, four terminals. This repository holds the specification and the gold set. It does not listen on a port. The commands below are for macOS and Linux. On Windows, activate each virtual environment with `.venv\Scripts\activate` and keep the same ports.
+
+Clone the repositories side by side. The copilot replay looks for `analysis/eval` next to `copilot-svc`, and the in-process ONB path looks for `onb-svc` in that same parent.
+
+```bash
+mkdir ipe && cd ipe
+git clone https://github.com/Capstone-iPe/analysis.git
+git clone https://github.com/Capstone-iPe/onb-corpus.git
+git clone https://github.com/Capstone-iPe/onb-svc.git
+git clone https://github.com/Capstone-iPe/copilot-svc.git
+git clone https://github.com/Capstone-iPe/copilot-web-app.git
+```
+
+Install Python 3.12 and PostgreSQL 16. Each service gets its own virtual environment.
+
+```bash
+# macOS
+brew install python@3.12 postgresql@16
+brew services start postgresql@16
+
+# Debian or Ubuntu
+sudo apt install python3.12 python3.12-venv postgresql
+```
+
+Create two databases. Table names do not overlap, and separate databases keep an ONB reset from wiping chat history.
+
+```bash
+createdb ipe_onb
+createdb ipe_copilot
+```
+
+If `createdb` asks for a password, put that user and password in the connection strings below: `postgresql://USER:PASSWORD@localhost:5432/ipe_onb`. A Homebrew install usually accepts `postgresql://localhost:5432/ipe_onb` for the account that created the database.
+
+### Keys you have to bring
+
+| Item | Where it goes | What it is |
+|---|---|---|
+| `EMBEDDINGS_API_KEY` and `vm02-ca.crt` | onb-corpus | Hosted embeddings, `bge-small-en-v1.5` at `https://103.42.50.41:1035/v1` |
+| `CHAT_API_KEY` and `vm06-ca.crt` | copilot-svc and onb-svc | Hosted chat, `Qwen/Qwen3-8B` at `https://103.42.50.41:1032/v1` |
+| `CORPUS_API_KEY` | the same string in onb-corpus and copilot-svc | Any long random secret you choose. `python3 -c "import secrets; print(secrets.token_hex(32))"` |
+| Google OAuth web client | website, copilot, and ONB | One client id and secret |
+
+The API keys and the two CA files are issued for the Capstone hosted endpoints. They are not in git. Keep them out of commits. The corpus index cannot be built without the embeddings key and `vm02-ca.crt`. The copilot cannot call the model without the chat key and `vm06-ca.crt`. ONB still starts without the chat key: document checks then use the rules checker.
+
+Create one Google Cloud OAuth client of type **Web application**. Authorized redirect URIs:
+
+- `http://localhost:5000/auth/callback` — the website
+- `http://127.0.0.1:8000/auth/google/callback` — ONB, for an MCP client that signs in through ONB
+
+Scopes the website requests are `openid`, `email`, and `profile`. While the consent screen is in testing, add the Google account you will use as a test user. Use that same client id on the website, the copilot, and ONB. Leave `GOOGLE_ENFORCE_ALLOWED_EMAILS` at `0`.
+
+### Start order
+
+| Order | Directory | Port | Ready when |
+|---|---|---|---|
+| 1 | `onb-corpus` | 8081 | `curl -sS http://127.0.0.1:8081/health` prints a status |
+| 2 | `onb-svc` | 8000 | `curl -sS http://127.0.0.1:8000/health` prints `{"status":"ok"}` |
+| 3 | `copilot-svc` | 8080 | `curl -sS http://127.0.0.1:8080/v1/health` answers |
+| 4 | `copilot-web-app` | 5000 | http://localhost:5000 shows Google sign-in |
+
+Each repository's README has the install commands and the full variable list. The local addresses are:
+
+```bash
+# onb-corpus .env
+CORPUS_API_KEY=<the secret you chose>
+EMBEDDINGS_API_KEY=<issued key>
+EMBEDDINGS_CA_CERT=vm02-ca.crt
+
+# onb-svc, sourced into the shell before python -m onb (this process does not read .env)
+export DATABASE_URL=postgresql://localhost:5432/ipe_onb
+export GOOGLE_CLIENT_ID=<client id>
+export GOOGLE_CLIENT_SECRET=<client secret>
+export ONB_PUBLIC_URL=http://127.0.0.1:8000
+export CHAT_API_KEY=<issued key>
+export CHAT_CA_CERT=$PWD/../copilot-svc/vm06-ca.crt
+export CORPUS_SEARCH_URL=http://127.0.0.1:8081
+export CORPUS_API_KEY=<the same secret>
+
+# copilot-svc .env
+ONB_MCP_URL=http://127.0.0.1:8000/mcp
+CORPUS_SEARCH_URL=http://127.0.0.1:8081
+CORPUS_API_KEY=<the same secret>
+DATABASE_URL=postgresql://localhost:5432/ipe_copilot
+GOOGLE_CLIENT_ID=<the same client id>
+CHAT_API_KEY=<issued key>
+CHAT_CA_CERT=vm06-ca.crt
+COPILOT_LANGFUSE_ENABLED=false
+
+# copilot-web-app .env
+CHAT_SERVICE_URL=http://127.0.0.1:8080
+GOOGLE_CLIENT_ID=<the same client id>
+GOOGLE_CLIENT_SECRET=<the same client secret>
+GOOGLE_REDIRECT_URI=http://localhost:5000/auth/callback
+SECRET_KEY=<another secrets.token_hex(32)>
+```
+
+Sign in at http://localhost:5000 with Google. The page sends that access token to the copilot, and the copilot sends it on to ONB. **Continue as test merchant** belongs to the mock chat inside `copilot-web-app`. The real copilot rejects it.
+
+To stop, Ctrl+C in each terminal. Postgres keeps the applications and the chat history. The next start uses the same databases.
+
 ## What we run
 
 Two services we build. Chat and embeddings are the Capstone hosted OpenAI-compatible endpoints (models below). The copilot prompts the chat model. ONB's verdict is still plain rules. The document check can call the same hosted chat model, and a rules checker is the fallback.

@@ -156,7 +156,7 @@ Status against [Capstone-Templates-GenAI-Agentic-AI.pdf](references/Capstone-Tem
 - [x] Conversation history for the chat UX is in Postgres (not used to decide tools or the verdict)
 - [x] Tracing dashboard / exported per-turn traces (Langfuse)
 - [x] Container, rate limit, cache — Render web service; 30 messages a minute per merchant; policy search cached for five minutes
-- [x] Recorded end-to-end Lotus Tea House through the live web chat ([recording](https://drive.google.com/file/d/1Nndm6BHsYXCLSn1M1u7tSTTfCnkopL-9/view?usp=sharing), [public Langfuse session](https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_3020d278483c))
+- [x] Recorded end-to-end Lotus Tea House through the live web chat ([recording](https://drive.google.com/file/d/1aGw2Dstrzxs5dF9-OQt8KpjT1I-ihrHL/view?usp=sharing), [public Langfuse session](https://us.cloud.langfuse.com/project/cmwwc06zv025bad0djdu06aup/sessions/app_2fc9ace8d96b))
 - [x] 12-page technical report: [Reports/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf](https://github.com/Capstone-iPe/Reports/blob/main/iPe_Merchant_Onboarding_Copilot_Submission_Report.pdf)
 
 The mentor dashboard is [docs/index.html](https://capstone-ipe.github.io/analysis/#team-tasks).
